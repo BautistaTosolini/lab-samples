@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     }
 
   } catch (error: any) {
-    console.log('POST_SIGN-UP:', error.message)
+    console.log('POST_SIGN-IN:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 })
   }
 };

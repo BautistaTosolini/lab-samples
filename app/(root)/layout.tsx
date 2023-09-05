@@ -1,9 +1,11 @@
 'use client';
 
-import LoadingSpinner from '@/components/loading-spinner';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+
+import LoadingSpinner from '@/components/loading-spinner';
+import { getUser } from '@/lib/getUser';
 
 interface UserResponse {
   user: string | null;
@@ -33,23 +35,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <main>
+    <main className='w-full flex justify-center items-center min-h-screen bg-gray-300'>
       {children}
     </main>
   )
 };
-
-const getUser = async (): Promise<UserResponse> => {
-  try {
-    const { data } = await axios.get('/api/auth/authenticate')
-
-    return { user: data, error: null }
-
-  } catch (e) {
-    const error = e as AxiosError;
-
-    return { user: null, error }
-  }
-}
 
 export default DashboardLayout;

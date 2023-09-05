@@ -7,7 +7,12 @@ import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 import Sample from '@/lib/models/sample.model';
 
-export async function GET() {
+export async function POST(request: Request) {
+  const body = await request.json();
+  
+  const { currentPage } = body;
+  const perPage = 15;
+
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -25,22 +30,37 @@ export async function GET() {
 
     connectToDB();
 
+    const skipAmount = (currentPage - 1) * perPage;
+    const samplesRequested = currentPage * perPage;
+
+    const totalSamplesCount = await Sample.countDocuments({
+      $or: [
+        { author: userId }, 
+        { assignedTo: userId },
+      ]
+    });
+
+    // if already sent all samples, returns null
+    if (totalSamplesCount < samplesRequested) {
+      return NextResponse.json({ user: null }, { status: 200 });
+    }
     const user = await User.findById(userId)
-  .populate({
-    path: 'samples',
-    model: Sample,
-    options: {
-      sort: { createdAt: -1 },
-      limit: 15,
-    },
-    populate: {
-      path: 'author',
-      model: User,
-    },
-  });
+      .populate({
+        path: 'samples',
+        model: Sample,
+        options: {
+          sort: { createdAt: -1 },
+          limit: perPage,
+          skip: skipAmount,
+        },
+        populate: {
+          path: 'author',
+          model: User,
+        },
+      });
 
     if (user) {
-      return NextResponse.json({ user }, { status: 200 });
+      return NextResponse.json({ user: user }, { status: 200 });
     } else {
       return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
     }
