@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 
 import LoadingSpinner from '@/components/loading-spinner';
 import { getUser } from '@/lib/getUser';
+import { API_BASE } from '@/constants';
 
 interface UserResponse {
   user: string | null;
@@ -21,7 +22,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       const { user, error } = await getUser();
 
       if (error) {
-        router.push('/sign-in');
+        router.push(`${API_BASE}/sign-in`);
         return;
       }
 

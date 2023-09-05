@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     }
 
   } catch (error: any) {
-    console.log('GET_AUTHENTICATE:', error.message)
+    console.log('GET_SAMPLES:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

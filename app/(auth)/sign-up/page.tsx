@@ -12,6 +12,7 @@ import { RegisterSchema } from '@/lib/validations/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { API_BASE } from '@/constants';
 
 interface Error {
   response?: {
@@ -48,7 +49,7 @@ const Page = () => {
     }
 
     try {
-      await axios.post('/api/auth/sign-in', payload)
+      await axios.post(`${API_BASE}/api/auth/sign-in`, payload)
       
       router.push('/dashboard');
 

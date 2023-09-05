@@ -7,10 +7,10 @@ import { useState, useEffect } from 'react';
 import SampleCard from '@/components/sample-card';
 import { Button } from '@/components/ui/button';
 import CreateSample from '@/components/create-sample';
-import { getUser } from '@/lib/getUser';
 import LoadingSpinner from '@/components/loading-spinner';
 import { getSamples } from '@/lib/getSamples';
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
+import { API_BASE } from '@/constants';
 
 const Page = () => {
   const router = useRouter();
@@ -34,7 +34,7 @@ const Page = () => {
 
   //logout button
   const onClick = async () => {
-    await axios.get('/api/auth/logout')
+    await axios.get(`${API_BASE}/api/auth/logout`)
 
     router.push('/sign-in')
   };

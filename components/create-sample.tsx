@@ -8,13 +8,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { LoginSchema } from '@/lib/validations/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SampleSchema } from '@/lib/validations/sample';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { API_BASE } from '@/constants';
 
 interface Error {
   response?: {
@@ -48,17 +48,19 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
   const onSubmit = async (data: z.infer<typeof SampleSchema>) => {
     const { code, sampleType, observations, inclusion, semithin, thin, grid } = data;
 
+    const payload = {
+      author,
+      code,
+      sampleType,
+      observations,
+      inclusion,
+      semithin,
+      thin,
+      grid,
+    }
+
     try {
-      const sample = await axios.post('/api/samples/create', {
-        author,
-        code,
-        sampleType,
-        observations,
-        inclusion,
-        semithin,
-        thin,
-        grid,
-      })
+      const sample = await axios.post(`${API_BASE}/api/samples/create`, payload)
 
       if (sample) {
         toast.success('Muestra creada');
