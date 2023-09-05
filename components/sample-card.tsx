@@ -10,16 +10,17 @@ interface SampleCardProps {
   semithin: boolean;
   thin: boolean;
   grid: boolean;
+  _id: string;
 }
 
-const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid }: SampleCardProps) => {
+const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid, _id }: SampleCardProps) => {
   const router = useRouter();
   const finalDate = new Date(date);
 
   return (
     <div 
       className='flex gap-2 bg-white rounded-lg p-4 border border-gray-300 hover:bg-gray-400 cursor-pointer'
-      // onClick={() => router.push('')}
+      onClick={() => router.push(`/dashboard/${_id}`)}
     >
       <div className='flex gap-4 text-center'>
         <span className='font-semibold w-20'>

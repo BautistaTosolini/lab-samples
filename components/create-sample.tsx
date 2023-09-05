@@ -15,7 +15,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SampleSchema } from '@/lib/validations/sample';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { UserInterface } from '@/app/(root)/dashboard/page';
 
 interface Error {
   response?: {
@@ -72,22 +71,7 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
 
       toast.error(error.response?.data?.message || 'Ocurrió un error')
     }
-    // const payload = {
-    //   email,
-    //   password,
-    // }
-
-    // try {
-    //   await axios.post('/api/samples/create', '')
-      
-    //   router.push('/dashboard');
-
-    // } catch (e) {
-    //   const error = e as Error;
-
-    //   toast.error(error.response?.data?.message || 'Ocurrió un error')
-    // }
-    
+  
   };
 
   return (
