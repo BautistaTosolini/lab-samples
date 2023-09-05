@@ -77,7 +77,7 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
   };
 
   return (
-    <Card className='w-[350px] border-2 border-gray-500 h-[600px]'>
+    <Card className='w-[350px] border-2 border-gray-500'>
       <Toaster />
       <CardHeader>
         <CardTitle>Agregar Muestra</CardTitle>

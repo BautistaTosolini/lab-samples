@@ -7,9 +7,8 @@ import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 import Sample from '@/lib/models/sample.model';
 
-export async function GET(request: NextRequest) {
-  console.log(request.url)
-  // console.log('SAMPLEID', sampleId)
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const sampleId = params.id
 
   const cookieStore = cookies();
 
@@ -29,13 +28,14 @@ export async function GET(request: NextRequest) {
     connectToDB();
 
     const user = await User.findById(userId);
-    // const sample = await Sample.findById(sampleId);
-
-    console.log('USER:', user);
-    // console.log('SAMPLE:', sample);
+    const sample = await Sample.findById(sampleId)
+      .populate({
+        path: 'author',
+        model: User,
+      });
 
     if (user) {
-      return NextResponse.json({ user }, { status: 200 });
+      return NextResponse.json({ user, sample }, { status: 200 });
     } else {
       return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
     }
