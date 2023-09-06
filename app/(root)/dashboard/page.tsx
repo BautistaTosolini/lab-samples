@@ -34,17 +34,19 @@ const Page = () => {
   //get user data and samples
   useEffect(() => {
     (async () => {
-      const { user, error } = await getSamples(page);
-  
-      if (error) {
-        router.push('/sign-in');
-        return;
-      }
+      await getSamples(page)
+        .then((response) => {
+          const { user } = response;
 
-      if (user) {
-        setUserInfo(user);
-        setSamples(user.samples);
-      }
+          if (user) {
+            setUserInfo(user)
+            setSamples(user.samples)
+            return;
+          }
+
+          router.push('/sign-in')
+        })
+        .catch((error) => router.push('/sign-in'));
 
     })()
   }, [router, page])
@@ -58,9 +60,11 @@ const Page = () => {
 
         setTimeout(async () => {
         const response = await getSamples(page);
+        console.log(response)
+        const newSamples = response.user?.samples
 
-        if (samples && response.user?.samples) {
-          setSamples([...samples, ...response.user.samples]);
+        if (samples && (newSamples?.length ?? 0) > 0) {
+          setSamples([...samples, ...newSamples || []]);
           setPage(page + 1);
           setIsLoading(false);
           setScrollEnabled(true);
@@ -81,6 +85,10 @@ const Page = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [isLoading, samples, page, scrollEnabled]);
+
+  console.log('PAGE:', page)
+  console.log('ISLOADING:', isLoading)
+  console.log('SCROLL ENABLED:', scrollEnabled)
 
   //if userinfo is null show a loading screen
   if (!userInfo) {
@@ -132,7 +140,7 @@ const Page = () => {
         })}
       </div>
 
-      {isLoading || scrollEnabled ? (
+      {isLoading && scrollEnabled || (samples?.length ?? 0) > 0 ? (
         <div className='w-full flex justify-center'>
           <div className='loader ease-linear rounded-full border-4 border-t-4 border-black h-12 w-12 mb-4' />
         </div> 

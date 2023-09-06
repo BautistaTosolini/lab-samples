@@ -49,7 +49,7 @@ const Page = () => {
     }
 
     try {
-      await axios.post(`${API_BASE}/api/auth/sign-in`, payload)
+      await axios.post(`${API_BASE}/api/auth/sign-up`, payload)
       
       router.push('/dashboard');
 

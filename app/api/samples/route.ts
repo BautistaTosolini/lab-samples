@@ -18,6 +18,7 @@ export async function POST(request: Request) {
   const token = cookieStore.get(COOKIE_NAME);
 
   if (!token) {
+    console.log('UNAUTHORIZED')
     return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
   }
 
@@ -41,9 +42,10 @@ export async function POST(request: Request) {
     });
 
     // if already sent all samples, returns null
-    if (totalSamplesCount < samplesRequested) {
+    if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
       return NextResponse.json({ user: null }, { status: 200 });
     }
+
     const user = await User.findById(userId)
       .populate({
         path: 'samples',
