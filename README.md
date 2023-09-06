@@ -51,9 +51,9 @@ $ npm install
 
 # Set up your enviroment variables
 # NODE_ENV can be production or anything else
-$ MONGODB_URL=
-$ JWT_SECRET=
-$ NODE_ENV=
+MONGODB_URL=
+JWT_SECRET=
+NODE_ENV=
 
 # Run the project
 $ npm run dev
