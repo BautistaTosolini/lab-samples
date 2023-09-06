@@ -10,16 +10,18 @@ import LoadingSpinner from '@/components/shared/loading-spinner';
 import { UserInterface } from '@/lib/interfaces/models.interface';
 import { Label } from '@/components/ui/label';
 
-const AssignedSamplesCard = () => {
+const AssignedSamplesCard = ({ id }: { id: string }) => {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
+
+  console.log('ID:', id)
 
   useEffect(() => {
     (async () => {
-      await axios.get(`${API_BASE}/api/users`)
+      await axios.get(`${API_BASE}/api/users/${id}`)
         .then((response) => setUsers(response.data.users))
         .catch((error) => toast.error(error.message));
     })()
-  }, [])
+  }, [id])
 
   if (!users) {
     return <LoadingSpinner />

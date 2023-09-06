@@ -100,7 +100,9 @@ const Page = ({ params }: { params: { id: string } }) => {
       </TabsContent>
 
       <TabsContent value='assigned'>
-        <AssignedSamplesCard />
+        <AssignedSamplesCard 
+          id={params.id}
+        />
       </TabsContent>
     </Tabs>
   )

@@ -1,12 +1,13 @@
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
 import { connectToDB } from '@/lib/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  console.log(params)
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -21,14 +22,17 @@ export async function GET({ params }: { params: { id: string } }) {
 
   try {
     const { userId } = verify(value, secret) as JwtPayload;
+    const sampleId = params.id;
 
     connectToDB();
 
     const users = await User.find({
       _id: { $ne: userId },
-      assignedTo: {  },
+      samples: { $in: [sampleId] },
       role: 'user',
     });
+
+    console.log('USERS:', users)
 
     if (!users) {
       return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
