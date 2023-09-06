@@ -1,25 +1,21 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UseFormReturn, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { FormControl, FormField, FormItem, FormLabel, Form, FormMessage } from '@/components/ui/form';
 import { SampleSchema } from '@/lib/validations/sample';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
 import { API_BASE } from '@/constants';
-import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
-import LoadingSpinner from '@/components/loading-spinner';
+import LoadingSpinner from '@/components/shared/loading-spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SampleForm from '@/components/sample-form';
+import SampleForm from '@/components/form/sample-form';
+import SampleDetailsCards from '@/components/cards/sample-details-card';
+import AssignedSamplesCard from '@/components/cards/assigned-samples-card';
+
+import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 
 const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -52,7 +48,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     });
 
       setIsFormReady(true);
-      
+
     }
   }, [sample]);
 
@@ -76,24 +72,36 @@ const Page = ({ params }: { params: { id: string } }) => {
     return <LoadingSpinner />
   }
 
+  const createdAtDate = new Date(sample.createdAt)
+  const updatedAtDate = new Date(sample.updatedAt)
+
   return (
-    <Tabs defaultValue="account" className="w-[400px]">
-      <TabsList>
-        <TabsTrigger value="account">Muestra</TabsTrigger>
-        <TabsTrigger value="password">Detalles</TabsTrigger>
-        <TabsTrigger value="assigned">Asignados</TabsTrigger>
+    <Tabs defaultValue='account' className='w-[400px] m-4'>
+      <TabsList className='w-full flex justify-between p-4'>
+        <TabsTrigger value='account'>Muestra</TabsTrigger>
+        <TabsTrigger value='details'>Detalles</TabsTrigger>
+        <TabsTrigger value='assigned'>Asignados</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="account">
+      <TabsContent value='account'>
         <SampleForm 
           onSubmit={onSubmit}
           defaultValues={defaultValues}
           resolver={resolver}
+          onClick={() => router.back()}
         />
       </TabsContent>
 
-      <TabsContent value="password">Change your password here.</TabsContent>
-      <TabsContent value="assigned">Change your password here.</TabsContent>
+      <TabsContent value='details'>
+        <SampleDetailsCards 
+          author={author}
+          sample={sample}
+        />
+      </TabsContent>
+
+      <TabsContent value='assigned'>
+        <AssignedSamplesCard />
+      </TabsContent>
     </Tabs>
   )
 }

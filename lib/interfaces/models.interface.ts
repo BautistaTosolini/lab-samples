@@ -11,6 +11,7 @@ export interface Samples {
   grid: boolean,
   _id: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserInterface {
@@ -19,4 +20,12 @@ export interface UserInterface {
   role: 'user' | 'researcher' | 'admin';
   samples: Samples[]
   _id: string;
+}
+
+export interface CustomError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
 }

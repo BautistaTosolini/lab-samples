@@ -3,34 +3,26 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 
-import SampleCard from '@/components/sample-card';
+import SampleCard from '@/components/cards/sample-card';
 import { Button } from '@/components/ui/button';
-import CreateSample from '@/components/create-sample';
-import LoadingSpinner from '@/components/loading-spinner';
+import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getSamples } from '@/lib/getSamples';
-import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { API_BASE } from '@/constants';
+import TableHeader from '@/components/shared/table-header';
+
+import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 
 const Page = () => {
   const router = useRouter();
-  const [isCreateSampleVisible, setCreateSampleVisible] = useState(false);
+
   const [userInfo, setUserInfo] = useState<UserInterface | null>(null);
   const [samples, setSamples] = useState<Samples[] | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [page, setPage] = useState(1);
-
-  //open-close create sample window
-  const onClickAddSample = () => {
-    setCreateSampleVisible(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const onCloseCreateSample = () => {
-    setCreateSampleVisible(false);
-    document.body.style.overflow = 'auto';
-  };
 
   //logout button
   const onClick = async () => {
@@ -90,19 +82,23 @@ const Page = () => {
     };
   }, [isLoading, samples, page, scrollEnabled]);
 
+  //if userinfo is null show a loading screen
   if (!userInfo) {
     return <LoadingSpinner />
   }
 
   return (
     <div className='flex flex-col gap-4 m-4'>
+      <Toaster />
+
       <span className='font-bold text-xl justify-center flex mt-2'>
         Bienvenido {userInfo.name}
       </span>
+
       <div className='flex flex-row justify-between p-2 gap-4'>
         <Button 
           className='w-full'
-          onClick={onClickAddSample}
+          onClick={() => router.push('/dashboard/create')}
         >
           Agregar Muestra
         </Button>
@@ -112,36 +108,11 @@ const Page = () => {
         >
           Cerrar Sesión
         </Button>
-        <div className={`${ isCreateSampleVisible ? 'block' : 'hidden'} absolute inset-0 flex items-center justify-center backdrop-blur m-2 h-full`}>
-          <CreateSample 
-            author={userInfo._id} 
-            onClose={onCloseCreateSample}  
-          />
-        </div>
       </div>
-      <div className='flex gap-5 bg-white rounded-lg p-4 border border-gray-300'>
-        <div className='flex flex-col'>
-          <h2 className='text-lg font-semibold mb-4 text-center border-b-2 border-black'>Registro de Ingresos</h2>
-          <div className='flex gap-4 text-center'>
-            <span className='font-semibold w-20 border-b-2 border-black'>Código</span>
-            <span className='font-semibold w-36 border-b-2 border-black'>Fecha de Ingreso</span>
-            <span className='font-semibold w-32 border-b-2 border-black'>Investigador</span>
-            <span className='font-semibold w-32 border-b-2 border-black'>Tipo de Muestra</span>
-            <span className='font-semibold w-56 border-b-2 border-black'>Observaciones</span>
-          </div>
-        </div>
-        <div className='flex flex-col'>
-          <h2 className='text-lg font-semibold mb-4 text-center border-b-2 border-black'>Estado</h2>
-          <div className='grid grid-cols-4 gap-2 text-center'>
-            <span className='w-20 font-semibold border-b-2 border-black'>Inclusión</span>
-            <span className='w-20 font-semibold border-b-2 border-black'>Semi Fino</span>
-            <span className='w-20 font-semibold border-b-2 border-black'>Fino</span>
-            <span className='w-20 font-semibold border-b-2 border-black'>Grilla</span>
-          </div>
-        </div>
-      </div>
+
+      <TableHeader />
+
       <div className='flex flex-col gap-2 h-full'>
-        
         {samples?.map((sample) => {
           return (
             <SampleCard 
@@ -160,11 +131,13 @@ const Page = () => {
           )
         })}
       </div>
+
       {isLoading || scrollEnabled ? (
         <div className='w-full flex justify-center'>
           <div className='loader ease-linear rounded-full border-4 border-t-4 border-black h-12 w-12 mb-4' />
         </div> 
         ) : (null)}
+
     </div>
   )
 };

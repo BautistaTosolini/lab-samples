@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-import LoadingSpinner from '@/components/loading-spinner';
+import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getUser } from '@/lib/getUser';
 import { API_BASE } from '@/constants';
 
@@ -36,7 +36,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <main className='w-full flex justify-center items-center min-h-screen bg-gray-300'>
+    <main className='w-full flex justify-center min-h-screen bg-gray-300'>
       {children}
     </main>
   )

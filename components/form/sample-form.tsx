@@ -1,86 +1,34 @@
-'use client'
-
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { Resolver, SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
-import axios from 'axios'
+import { z } from 'zod';
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SampleSchema } from '@/lib/validations/sample';
-import { Textarea } from '@/components/ui/textarea';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, Form } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { API_BASE } from '@/constants';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { SampleSchema } from '@/lib/validations/sample';
 
-interface Error {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
+interface SampleFormProps {
+  onSubmit: SubmitHandler<z.infer<typeof SampleSchema>>;
+  resolver: Resolver<any>;
+  defaultValues: Partial<Record<keyof z.infer<typeof SampleSchema>, any>>;
+  onClick: () => void;
 }
 
-interface CreateSampleInterface {
-  author: string;
-  onClose: () => void;
-}
-
-const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
+const SampleForm = ({ onSubmit, resolver, defaultValues, onClick }: SampleFormProps) => {
   const router = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(SampleSchema),
-    defaultValues: {
-      code: '',
-      sampleType: '',
-      observations: '',
-      inclusion: false,
-      semithin: false,
-      thin: false,
-      grid: false,
-    }
-  })
-
-  const onSubmit = async (data: z.infer<typeof SampleSchema>) => {
-    const { code, sampleType, observations, inclusion, semithin, thin, grid } = data;
-
-    const payload = {
-      author,
-      code,
-      sampleType,
-      observations,
-      inclusion,
-      semithin,
-      thin,
-      grid,
-    }
-
-    try {
-      const sample = await axios.post(`${API_BASE}/api/samples/create`, payload)
-
-      if (sample) {
-        toast.success('Muestra creada');
-      }
-
-      form.reset();
-      
-    } catch (e) {
-      const error = e as Error;
-
-      toast.error(error.response?.data?.message || 'Ocurrió un error')
-    }
-  
-  };
+    resolver: resolver,
+    defaultValues: defaultValues || {},
+  });
 
   return (
-    <Card className='w-[350px] border-2 border-gray-500'>
-      <Toaster />
+    <Card className='w-full'>
       <CardHeader>
-        <CardTitle>Agregar Muestra</CardTitle>
+        <CardTitle>Modificar Muestra</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>
       </CardHeader>
       <CardContent>
@@ -101,6 +49,7 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
                       {...field} 
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -119,6 +68,7 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
                       {...field} 
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -208,14 +158,20 @@ const CreateSample = ({ author, onClose }: CreateSampleInterface) => {
             />
 
             <div className='flex justify-center gap-4'>
-              <Button onClick={onClose} type='button' className='w-40'>Volver</Button>
-              <Button type='submit' className='w-40'>Enviar</Button>
+              <Button 
+                onClick={onClick}
+                type='button' 
+                className='w-40'
+              >
+                Volver
+              </Button>
+              <Button type='submit' className='w-40'>Guardar</Button>
             </div>
           </form>
         </Form>
       </CardContent>
     </Card>
   )
-};
+}
 
-export default CreateSample;
+export default SampleForm;
