@@ -1,6 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
 
-import type { UserInterface } from "@/app/(root)/dashboard/page";
+import { UserInterface } from './interfaces/models.interface';
 
 interface UserResponse {
   user: UserInterface | null;

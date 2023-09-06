@@ -142,7 +142,7 @@ const Page = () => {
 
       {isLoading && scrollEnabled || (samples?.length ?? 0) > 0 ? (
         <div className='w-full flex justify-center'>
-          <div className='loader ease-linear rounded-full border-4 border-t-4 border-black h-12 w-12 mb-4' />
+          <div className='loader ease-linear rounded-full border-4 border-t-4 border-white h-12 w-12 mb-4' />
         </div> 
         ) : (null)}
 

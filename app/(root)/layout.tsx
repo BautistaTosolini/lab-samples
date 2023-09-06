@@ -8,11 +8,6 @@ import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getUser } from '@/lib/getUser';
 import { API_BASE } from '@/constants';
 
-interface UserResponse {
-  user: string | null;
-  error: AxiosError | null;
-}
-
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

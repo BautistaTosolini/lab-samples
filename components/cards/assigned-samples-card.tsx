@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { API_BASE } from '@/constants';
 import { Separator } from '@/components/ui/separator';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 
 import { UserInterface } from '@/lib/interfaces/models.interface';
+import { Label } from '@/components/ui/label';
 
 const AssignedSamplesCard = () => {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
@@ -28,22 +29,37 @@ const AssignedSamplesCard = () => {
     <Card>
       <Toaster />
       <CardHeader>
-        <CardTitle>Asignados de la Muestra</CardTitle>
+        <CardTitle>Asignación</CardTitle>
       </CardHeader>
-      <CardContent>
-      <div className='flex h-80 w-full flex-col rounded-md border bg-gray-200 px-3 py-2 text-sm my-2 overflow-y-auto gap-2'>
-        {users?.map((user) => {
-          return (
-            <div
-            key={user._id}
-            className='flex flex-col'
-            >
-              {user.email}
-              <Separator className='bg-gray-400' />
-            </div>
-          )
-        })}
-      </div>
+      <CardContent className='flex flex-col gap-1'>
+        <Label>Usuarios asignados:</Label>
+        <div className='flex h-64 w-full flex-col rounded-md border bg-gray-200 text-sm mb-2 overflow-y-auto gap-2 py-1'>
+          {users?.map((user) => {
+            return (
+              <div
+              key={user._id}
+              className='flex flex-col cursor-pointer hover:bg-gray-500 rounded-sm w-full px-2'
+              >
+                {user.email} - {user.name}
+                <Separator className='bg-gray-400' />
+              </div>
+            )
+          })}
+        </div>
+        <Label>Usuarios sin asignar:</Label>
+        <div className='flex h-64 w-full flex-col rounded-md border bg-gray-200 text-sm mb-2 overflow-y-auto gap-2 py-1'>
+          {users?.map((user) => {
+            return (
+              <div
+              key={user._id}
+              className='flex flex-col cursor-pointer hover:bg-gray-500 rounded-sm w-full px-2'
+              >
+                {user.email} - {user.name}
+                <Separator className='bg-gray-400' />
+              </div>
+            )
+          })}
+        </div>
       </CardContent>
     </Card>
   )
