@@ -35,7 +35,7 @@ const Page = () => {
       const { user, error } = await getUser();
   
       if (error) {
-        router.push('/sign-in');
+        router.push('/');
         return;
       }
 

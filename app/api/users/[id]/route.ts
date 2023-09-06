@@ -7,7 +7,6 @@ import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  console.log(params)
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -26,19 +25,22 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     connectToDB();
 
-    const users = await User.find({
+    const assignedUsers = await User.find({
       _id: { $ne: userId },
       samples: { $in: [sampleId] },
       role: 'user',
     });
 
-    console.log('USERS:', users)
+    const unassignedUsers = await User.find({
+      _id: { $ne: userId },
+      samples: { $nin: [sampleId] },
+      role: 'user',
+      options: {
+        limit: 25,
+      }
+    })
 
-    if (!users) {
-      return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
-    }
-
-    return NextResponse.json({ users: users }, { status: 200 });
+    return NextResponse.json({ assignedUsers, unassignedUsers }, { status: 200 });
 
   } catch (error: any) {
     console.log('GET_SAMPLES:', error.message)

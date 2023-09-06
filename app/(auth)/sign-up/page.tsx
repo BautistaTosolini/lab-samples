@@ -153,7 +153,7 @@ const Page = () => {
               ¿Ya tienes una cuenta?
                 <span 
                   className='text-purple-800 cursor-pointer mx-1'
-                  onClick={() => router.push('/sign-in')}
+                  onClick={() => router.push('/')}
                 >
                   Inicia sesión
                 </span> 

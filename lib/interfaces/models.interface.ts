@@ -18,8 +18,9 @@ export interface UserInterface {
   email: string;
   name: string;
   role: 'user' | 'researcher' | 'admin';
-  samples: Samples[]
+  samples: Samples[];
   _id: string;
+  createdAt: string;
 }
 
 export interface CustomError {

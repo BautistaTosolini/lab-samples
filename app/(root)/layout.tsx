@@ -17,7 +17,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       const { user, error } = await getUser();
 
       if (error) {
-        router.push(`${API_BASE}/sign-in`);
+        router.push(`${API_BASE}/`);
         return;
       }
 

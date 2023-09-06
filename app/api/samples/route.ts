@@ -18,7 +18,6 @@ export async function POST(request: Request) {
   const token = cookieStore.get(COOKIE_NAME);
 
   if (!token) {
-    console.log('UNAUTHORIZED')
     return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
   }
 

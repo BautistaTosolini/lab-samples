@@ -28,7 +28,7 @@ const Page = () => {
   const onClick = async () => {
     await axios.get(`${API_BASE}/api/auth/logout`)
 
-    router.push('/sign-in')
+    router.push('/')
   };
   
   //get user data and samples
@@ -44,9 +44,9 @@ const Page = () => {
             return;
           }
 
-          router.push('/sign-in')
+          router.push('/')
         })
-        .catch((error) => router.push('/sign-in'));
+        .catch(() => router.push('/'));
 
     })()
   }, [router, page])
