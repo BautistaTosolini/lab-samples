@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getUser } from '@/lib/getUser';
 import { API_BASE } from '@/constants';
+import Navbar from '@/components/shared/navbar';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

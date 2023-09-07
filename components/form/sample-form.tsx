@@ -154,7 +154,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                   return (
                     <div
                     key={researcher._id}
-                    className={`flex flex-col cursor-pointer hover:bg-gray-400 rounded-sm w-full px-2 ${selectedResearcher === researcher ? 'bg-gray-400' : ''}`}
+                    className={`flex flex-col cursor-pointer hover:bg-gray-400 rounded-sm w-full px-2 font-bold ${selectedResearcher === researcher ? 'bg-gray-400' : ''}`}
                     onClick={() => selectResearcher(researcher)}
                     >
                       {researcher.name} {researcher.lastname} - {researcher.email}
