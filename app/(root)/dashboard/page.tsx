@@ -9,10 +9,14 @@ import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getSamples } from '@/lib/getSamples';
 import TableHeader from '@/components/shared/table-header';
+import toast, { Toaster } from 'react-hot-toast';
 
 import fetchData from '@/lib/utils/fetchSamples';
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import Navbar from '@/components/shared/navbar';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const Page = () => {
   const router = useRouter();
@@ -24,12 +28,29 @@ const Page = () => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [page, setPage] = useState(1);
 
-  //logout button
-  const onClick = async () => {
-    await axios.get(`/api/auth/logout`)
+  const [searchParam, setSearchParam] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
 
-    router.push('/')
-  };
+  //waits 0.5s before making the fetch request
+  const debouncedValue = useDebounce<string>(searchParam, 500);
+
+  useEffect(() => {
+    (async () => {
+      if (isMounted) {
+        await axios.post(`/api/samples/search`, { searchParam, currentPage: page })
+          .then((response) => {
+            console.log(response)
+            const searchedSamples = response.data.samples;
+            setSamples(searchedSamples)
+          })
+          .catch((error) => {
+            toast.error(error.response?.data?.message)
+          })
+      } else {
+        setIsMounted(true);
+      }
+    })()
+  }, [debouncedValue])
   
   //get user data and samples
   useEffect(() => {
@@ -81,18 +102,24 @@ const Page = () => {
 
   return (
     <>
-      <Navbar 
-        onClick={onClick}
-      />
-      <div className='flex flex-col gap-4 m-4 mt-10'>
+      <Navbar />
 
+      <Toaster />
+
+      <div className='flex flex-col gap-4 m-4 mt-10'>
         <span className='font-bold text-xl justify-center flex mt-2'>
           Bienvenido {userInfo.name}
         </span>
 
-        <div className='flex flex-row justify-between p-2 gap-4'>
+        <div className='flex flex-row justify-between px-4 gap-4'>
+          <Input 
+            placeholder='Ingrese un código de muestra...'
+            className='w-[80%]'
+            value={searchParam}
+            onChange={(e) => setSearchParam(e.target.value)}
+          />
           <Button 
-            className='w-full'
+            className='w-[80%]'
             onClick={() => router.push('/dashboard/create')}
           >
             Agregar Muestra
