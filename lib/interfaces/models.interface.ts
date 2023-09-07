@@ -1,7 +1,7 @@
 export interface Samples {
   code: string;
   date: Date,
-  author: UserInterface,
+  researcher: UserInterface,
   assignedTo: UserInterface[],
   sampleType: string,
   observations: string,
@@ -17,7 +17,8 @@ export interface Samples {
 export interface UserInterface {
   email: string;
   name: string;
-  role: 'user' | 'researcher' | 'admin';
+  lastname: string;
+  role: 'researcher' | 'secretary';
   samples: Samples[];
   _id: string;
   createdAt: string;

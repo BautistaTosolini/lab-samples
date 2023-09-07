@@ -5,6 +5,7 @@ import { verify, JwtPayload } from 'jsonwebtoken';
 import { connectToDB } from '@/lib/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
+import Sample from '@/lib/models/sample.model';
 
 export async function GET() {
   const cookieStore = cookies();
@@ -24,7 +25,13 @@ export async function GET() {
 
     connectToDB();
 
-    const users = await User.find({ _id: { $ne: userId }, role: 'user' });
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
+    }
+
+    const users = await User.find({ role: 'researcher' });
 
     if (!users) {
       return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });

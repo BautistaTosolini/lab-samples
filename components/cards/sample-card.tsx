@@ -29,7 +29,7 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
         <span className='font-semibold w-36'>
           {finalDate.toLocaleDateString()}
         </span>
-        <span className='font-semibold w-32'>
+        <span className='font-semibold w-40'>
           {researcher}
         </span>
         <span className='font-semibold w-32'>

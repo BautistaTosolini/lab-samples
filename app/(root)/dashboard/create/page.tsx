@@ -18,17 +18,7 @@ const Page = () => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInterface | null>(null);
 
-  const defaultValues = {
-    code: '',
-    sampleType: '',
-    observations: '',
-    inclusion: false,
-    semithin: false,
-    thin: false,
-    grid: false,
-  };
-
-  const resolver = zodResolver(SampleSchema);
+  let code = '';
 
   useEffect(() => {
     (async () => {
@@ -46,47 +36,12 @@ const Page = () => {
     })()
   }, [router])
 
-  const onSubmit = async (data: z.infer<typeof SampleSchema>) => {
-    const { code, sampleType, observations, inclusion, semithin, thin, grid } = data;
-
-    const payload = {
-      author: userInfo?._id,
-      code,
-      sampleType,
-      observations,
-      inclusion,
-      semithin,
-      thin,
-      grid,
-    }
-
-    try {
-      const sample = await axios.post(`${API_BASE}/api/samples/create`, payload)
-
-      if (sample) {
-        toast.success('Muestra creada');
-
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1500);
-      }
-      
-    } catch (e) {
-      const error = e as CustomError;
-
-      toast.error(error.response?.data?.message || 'Ocurrió un error')
-    }
-  
-  };
-
   return (
-    <div className='absolute inset-0 flex justify-center backdrop-blur m-4 h-full'>
+    <div className='m-4'>
       <Toaster />
       <div>
         <SampleForm 
-          onSubmit={onSubmit}
-          defaultValues={defaultValues}
-          resolver={resolver}
+          userInfo={userInfo}
           onClick={() => router.push('/dashboard')}
         />
       </div>

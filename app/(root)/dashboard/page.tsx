@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import SampleCard from '@/components/cards/sample-card';
 import { Button } from '@/components/ui/button';
@@ -34,19 +34,23 @@ const Page = () => {
   //get user data and samples
   useEffect(() => {
     (async () => {
-      await getSamples(page)
+      await axios.post(`${API_BASE}/api/samples`, { page })
         .then((response) => {
-          const { user } = response;
+          const user = response.data.user;
+          const samples = response.data.user.samples;
+          console.log(user)
+          console.log(samples)
 
-          if (user) {
-            setUserInfo(user)
-            setSamples(user.samples)
-            return;
+          setUserInfo(user);
+          setSamples(samples);
+
+          if (!user) {
+            router.push('/')
           }
 
-          router.push('/')
+          setIsLoading(true);
         })
-        .catch(() => router.push('/'));
+        .catch((error) => toast.error(error.response.data.message))
 
     })()
   }, [router, page])
@@ -60,7 +64,6 @@ const Page = () => {
 
         setTimeout(async () => {
         const response = await getSamples(page);
-        console.log(response)
         const newSamples = response.user?.samples
 
         if (samples && (newSamples?.length ?? 0) > 0) {
@@ -85,10 +88,6 @@ const Page = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [isLoading, samples, page, scrollEnabled]);
-
-  console.log('PAGE:', page)
-  console.log('ISLOADING:', isLoading)
-  console.log('SCROLL ENABLED:', scrollEnabled)
 
   //if userinfo is null show a loading screen
   if (!userInfo) {
@@ -127,7 +126,7 @@ const Page = () => {
               key={`${sample._id}-${sample.code}-${sample.date}`}
               code={sample.code}
               date={sample.createdAt}
-              researcher={sample.author.name}
+              researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
               sampleType={sample.sampleType}
               observations={sample.observations}
               inclusion={sample.inclusion}

@@ -29,6 +29,7 @@ const Page = () => {
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: '',
+      lastname: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -36,7 +37,7 @@ const Page = () => {
   })
 
   const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
-    const { name, email, password, confirmPassword } = data;
+    const { name, lastname, email, password, confirmPassword } = data;
 
     if (password !== confirmPassword) {
       return toast.error('Las contraseñas no coinciden');
@@ -44,20 +45,14 @@ const Page = () => {
 
     const payload = {
       name,
+      lastname,
       email,
       password,
     }
 
-    try {
-      await axios.post(`${API_BASE}/api/auth/sign-up`, payload)
-      
-      router.push('/dashboard');
-
-    } catch (e) {
-      const error = e as Error;
-
-      toast.error(error.response?.data?.message || 'Ocurrió un error')
-    }
+    await axios.post(`${API_BASE}/api/auth/sign-up`, payload)
+      .then(() => router.push('/dashboard'))
+      .catch((error) => toast.error(error.response.data.message));
     
   };
 
@@ -71,12 +66,32 @@ const Page = () => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input 
+                      className='bg-gray-200'
+                      type='text'
+                      placeholder='Ingrese su nombre...' 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='lastname'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Apellido</FormLabel>
                   <FormControl>
                     <Input 
                       className='bg-gray-200'

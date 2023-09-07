@@ -34,7 +34,7 @@ export async function GET() {
       limit: 15,
     },
     populate: {
-      path: 'author',
+      path: 'researcher',
       model: User,
     },
   });

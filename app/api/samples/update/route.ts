@@ -1,12 +1,17 @@
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
 import { connectToDB } from '@/lib/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
+import Sample from '@/lib/models/sample.model';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: Request) {
+  const body = await request.json();
+  
+  const { inclusion, thin, semithin, grid, sampleId } = body;
+
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -21,26 +26,17 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
   try {
     const { userId } = verify(value, secret) as JwtPayload;
-    const sampleId = params.id;
 
     connectToDB();
 
-    const assignedUsers = await User.find({
-      _id: { $ne: userId },
-      samples: { $in: [sampleId] },
-      role: 'user',
-    });
-
-    const unassignedUsers = await User.find({
-      _id: { $ne: userId },
-      samples: { $nin: [sampleId] },
-      role: 'user',
-      options: {
-        limit: 25,
-      }
+    const updatedSample = await Sample.findByIdAndUpdate(sampleId, {
+      inclusion,
+      thin,
+      semithin,
+      grid
     })
 
-    return NextResponse.json({ assignedUsers, unassignedUsers }, { status: 200 });
+    return NextResponse.json({ message: 'Muestra actualizada' }, { status: 200 });
 
   } catch (error: any) {
     console.log('GET_SAMPLES:', error.message)

@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
       const response = { message: 'Autenticado' };
   
-      return new Response(JSON.stringify(response), { status: 200, headers: { 'Set-Cookie': serialized } });
+      return NextResponse.json({ message: 'Autenticado' }, { status: 200, headers: { 'Set-Cookie': serialized } });
     } else {
       return NextResponse.json({ message: 'E-Mail o contraseña inválidos' }, { status: 401 })
     }

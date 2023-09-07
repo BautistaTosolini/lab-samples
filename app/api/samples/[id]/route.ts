@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const user = await User.findById(userId);
     const sample = await Sample.findById(sampleId)
       .populate({
-        path: 'author',
+        path: 'researcher',
         model: User,
       });
 

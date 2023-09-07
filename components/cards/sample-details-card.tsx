@@ -1,35 +1,47 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { UseFormReturn } from 'react-hook-form';
+
+import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import InformationCard from '@/components/cards/information-card';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 
-import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
+import { Samples } from '@/lib/interfaces/models.interface';
 
-interface SampleDetailsCardsProps {
-  author: UserInterface;
+interface SampleDetailsCardProps {
   sample: Samples;
+  form: UseFormReturn<{ inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; }, any, undefined>;
 }
 
-const SampleDetailsCards = ({ author, sample }: SampleDetailsCardsProps) => {
+const SampleDetailsCard = ({ sample, form }: SampleDetailsCardProps) => {
+  const router = useRouter();
   const createdAtDate = new Date(sample.createdAt)
   const updatedAtDate = new Date(sample.updatedAt)
 
   return (
-    <Card className='w-full'>
+    <>
       <CardHeader className='w-full'>
         <CardTitle>Detalles de la Muestra</CardTitle>
       </CardHeader>
-      <CardContent>
+      <>
         <Label>
-          Investigador:
+          Código de Muestra:
         </Label>
         <InformationCard>
-          {author.name}
+          {sample.code}
         </InformationCard>
         <Label>
-          E-Mail:
+          Tipo de Muestra:
         </Label>
         <InformationCard>
-          {author.email}
+          {sample.sampleType}
+        </InformationCard>
+        <Label>
+          Observaciones:
+        </Label>
+        <InformationCard>
+          {sample.observations}
         </InformationCard>
         <Label>
           Fecha de Creación:
@@ -43,9 +55,74 @@ const SampleDetailsCards = ({ author, sample }: SampleDetailsCardsProps) => {
         <InformationCard>
           {updatedAtDate.toLocaleDateString()}
         </InformationCard>
-      </CardContent>
-    </Card>
+
+        <FormField
+          control={form.control}
+          name='inclusion'
+          render={({ field }) => (
+            <FormItem className='flex justify-between m-2'>
+              <FormLabel>Inclusión</FormLabel>
+              <FormControl>
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='thin'
+          render={({ field }) => (
+            <FormItem className='flex justify-between m-2'>
+              <FormLabel>Fino</FormLabel>
+              <FormControl>
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='semithin'
+          render={({ field }) => (
+            <FormItem className='flex justify-between m-2'>
+              <FormLabel>Semi Fino</FormLabel>
+              <FormControl>
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='grid'
+          render={({ field }) => (
+            <FormItem className='flex justify-between m-2'>
+              <FormLabel>Grilla</FormLabel>
+              <FormControl>
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+      </>
+    </>
   )
 }
 
-export default SampleDetailsCards;
+export default SampleDetailsCard;

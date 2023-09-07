@@ -6,7 +6,7 @@ const TableHeader = () => {
         <div className='flex gap-4 text-center'>
           <span className='font-semibold w-20 border-b-2 border-black'>Código</span>
           <span className='font-semibold w-36 border-b-2 border-black'>Fecha de Ingreso</span>
-          <span className='font-semibold w-32 border-b-2 border-black'>Investigador</span>
+          <span className='font-semibold w-40 border-b-2 border-black'>Investigador</span>
           <span className='font-semibold w-32 border-b-2 border-black'>Tipo de Muestra</span>
           <span className='font-semibold w-56 border-b-2 border-black'>Observaciones</span>
         </div>

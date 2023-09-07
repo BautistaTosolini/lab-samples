@@ -9,7 +9,7 @@ import { COOKIE_NAME, MAX_AGE } from '@/constants';
 export async function POST(request: Request) {
   const body = await request.json();
 
-  const { name, email, password } = body;
+  const { name, lastname, email, password } = body;
 
   try {
     connectToDB();
@@ -22,6 +22,7 @@ export async function POST(request: Request) {
 
     const user = await User.create({
       name,
+      lastname,
       email,
       password,
     })
@@ -41,9 +42,7 @@ export async function POST(request: Request) {
       path: '/',
     });
 
-    const response = { message: 'Autenticado' };
-
-    return new Response(JSON.stringify(response), { status: 200, headers: { 'Set-Cookie': serialized } });
+    return NextResponse.json({ message: 'Autenticado' }, { status: 200, headers: { 'Set-Cookie': serialized } });
 
   } catch (error: any) {
     console.log('POST_SIGN-UP:', error.message)

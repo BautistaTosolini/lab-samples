@@ -6,16 +6,10 @@ const sampleModel = new mongoose.Schema({
     type: String, 
     required: true, 
   },
-  author: { 
+  researcher: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  assignedTo: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }
-  ],
   sampleType: {
     type: String,
     required: true,
@@ -25,19 +19,19 @@ const sampleModel = new mongoose.Schema({
   },
   inclusion: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   semithin: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   thin: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   grid: {
     type: Boolean,
-    required: true,
+    default: false,
   },
 }, {
   timestamps: true

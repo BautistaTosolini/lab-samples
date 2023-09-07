@@ -55,7 +55,7 @@ export async function POST(request: Request) {
           skip: skipAmount,
         },
         populate: {
-          path: 'author',
+          path: 'researcher',
           model: User,
         },
       });

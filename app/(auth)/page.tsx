@@ -41,16 +41,9 @@ const Page = () => {
       password,
     }
 
-    try {
-      await axios.post(`${API_BASE}/api/auth/sign-in`, payload)
-      
-      router.push('/dashboard');
-
-    } catch (e) {
-      const error = e as Error;
-
-      toast.error(error.response?.data?.message || 'Ocurrió un error')
-    }
+    await axios.post(`${API_BASE}/api/auth/sign-in`, payload)
+      .then(() => router.push('/dashboard'))
+      .catch((error) => toast.error(error.response.data.message));
     
   };
 

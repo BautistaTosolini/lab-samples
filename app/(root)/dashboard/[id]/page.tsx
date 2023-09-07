@@ -6,104 +6,134 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { SampleSchema } from '@/lib/validations/sample';
+import { SampleSchema, UpdateSampleSchema } from '@/lib/validations/sample';
 import { API_BASE } from '@/constants';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SampleForm from '@/components/form/sample-form';
-import SampleDetailsCards from '@/components/cards/sample-details-card';
-import AssignedSamplesCard from '@/components/cards/assigned-samples-card';
+import SampleDetailsCard from '@/components/cards/sample-details-card';
+import ResearcherDetailsCard from '@/components/cards/researcher-details-card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
+import { Form } from '@/components/ui/form';
 
 const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const [sample, setSample] = useState<Samples | null>(null);
-  const [author, setAuthor] = useState<UserInterface | null>(null);
-  const [isFormReady, setIsFormReady] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({
-    code: '',
-    sampleType: '',
-    observations: '',
-    inclusion: false,
-    semithin: false,
-    thin: false,
-    grid: false,
-  });
+  const [researcher, setResearcher] = useState<UserInterface | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const resolver = zodResolver(SampleSchema);
+  const onSubmit = async (data: z.infer<typeof UpdateSampleSchema>) => {
+    const { inclusion, semithin, thin, grid } = data;
 
-  //update the form when the sample came from the backend
-  useEffect(() => {
-    if (sample) {
-      setDefaultValues({
-      code: sample.code,
-      sampleType: sample.sampleType,
-      observations: sample.observations,
-      inclusion: sample.inclusion,
-      semithin: sample.semithin,
-      thin: sample.thin,
-      grid: sample.grid,
-    });
-
-      setIsFormReady(true);
-
+    const payload = {
+      inclusion,
+      semithin,
+      thin,
+      grid,
+      sampleId: params.id,
     }
-  }, [sample]);
 
-  const onSubmit = (data: z.infer<typeof SampleSchema>) => {
-    console.log(data)
+    await axios.post(`${API_BASE}/api/samples/update`, payload)
+      .then((response) => {
+        toast.success(response.data.message)
+
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || 'Ocurrió un error')
+      })
   }
 
-  //get the sample and author information
+  const form = useForm({
+    resolver: zodResolver(UpdateSampleSchema),
+    defaultValues: {
+      inclusion: sample ? sample.inclusion : false,
+      semithin: sample ? sample.semithin : false,
+      thin: sample ? sample.thin : false,
+      grid: sample ? sample.grid : false,
+    },
+  });
+
+  //get the sample and researcher information
   useEffect(() => {
     (async () => {
       await axios.get(`${API_BASE}/api/samples/${params.id}`)
         .then((response) => {
-          setSample(response.data.sample)
-          setAuthor(response.data.sample.author)
+          setSample(response.data.sample);
+          setResearcher(response.data.sample.researcher);
+          setIsLoading(false);
+          form.reset({
+            inclusion: response.data.sample.inclusion,
+            semithin: response.data.sample.semithin,
+            thin: response.data.sample.thin,
+            grid: response.data.sample.grid,
+          });
         })
         .catch((error) => toast.error(error.message));
     })()
-  }, [router, params.id])
+  }, [router, params.id, form])
 
-  if (!author || !sample || !isFormReady) {
+  console.log(sample)
+
+  if (isLoading) {
     return <LoadingSpinner />
   }
 
-  const createdAtDate = new Date(sample.createdAt)
-  const updatedAtDate = new Date(sample.updatedAt)
+  if (!sample || !researcher) {
+    return router.push('/dashboard');
+  }
 
   return (
-    <Tabs defaultValue='account' className='w-[400px] m-4'>
-      <TabsList className='w-full flex justify-between p-4'>
-        <TabsTrigger value='account'>Muestra</TabsTrigger>
-        <TabsTrigger value='details'>Detalles</TabsTrigger>
-        <TabsTrigger value='assigned'>Asignados</TabsTrigger>
+    <Tabs defaultValue='details' className='w-[400px] m-4 gap-4 flex flex-col'>
+      <TabsList className='w-full flex justify-between'>
+        <TabsTrigger value='details' className='w-full'>Detalles</TabsTrigger>
+        <TabsTrigger value='researcher' className='w-full'>Investigador</TabsTrigger>
       </TabsList>
+      <Card>
+        <CardContent>
+          <Toaster />
 
-      <TabsContent value='account'>
-        <SampleForm 
-          onSubmit={onSubmit}
-          defaultValues={defaultValues}
-          resolver={resolver}
-          onClick={() => router.back()}
-        />
-      </TabsContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
 
-      <TabsContent value='details'>
-        <SampleDetailsCards 
-          author={author}
-          sample={sample}
-        />
-      </TabsContent>
+              <TabsContent value='details'>
+                <SampleDetailsCard 
+                  sample={sample}
+                  form={form}
+                />
+              </TabsContent>
 
-      <TabsContent value='assigned'>
-        <AssignedSamplesCard 
-          id={params.id}
-        />
-      </TabsContent>
+              <TabsContent value='researcher'>
+                <ResearcherDetailsCard
+                  researcher={researcher}
+                />
+              </TabsContent>
+
+              <div className='flex w-full justify-center gap-4 mt-4'>
+                <Button 
+                  className='w-full'
+                  type='button'
+                  onClick={() => router.push('/dashboard')}
+                >
+                  Volver
+                </Button>
+                <Button
+                  className='w-full'
+                >
+                  Guardar
+                </Button>
+              </div>
+
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </Tabs>
   )
 }

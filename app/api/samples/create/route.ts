@@ -10,7 +10,7 @@ import Sample from '@/lib/models/sample.model';
 export async function POST(request: Request) {
   const body = await request.json();
 
-  const { author,
+  const { researcher,
     code,
     sampleType,
     observations,
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     connectToDB();
 
     const sample = await Sample.create({
-      author,
+      researcher,
       code,
       sampleType,
       observations,
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       grid,
     })
 
-    await User.findByIdAndUpdate(author, {
+    await User.findByIdAndUpdate(researcher, {
       $push: { samples: sample._id }
     })
     
