@@ -4,13 +4,14 @@ import { verify, JwtPayload } from 'jsonwebtoken';
 
 import { connectToDB } from '@/lib/mongoose';
 import User from '@/lib/models/user.model';
-import { COOKIE_NAME } from '@/constants';
+import { COOKIE_NAME, PER_PAGE } from '@/constants';
 import Sample from '@/lib/models/sample.model';
 
 export async function POST(request: Request) {
   const body = await request.json();
 
   const { searchParam, currentPage } = body;
+  const perPage = PER_PAGE;
 
   const cookieStore = cookies();
 

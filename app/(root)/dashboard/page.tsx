@@ -15,7 +15,6 @@ import fetchData from '@/lib/utils/fetchSamples';
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import Navbar from '@/components/shared/navbar';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
 import { useDebounce } from '@/hooks/use-debounce';
 
 const Page = () => {
@@ -26,20 +25,30 @@ const Page = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(2);
 
   const [searchParam, setSearchParam] = useState('');
   const [isMounted, setIsMounted] = useState(false);
+  
+  console.log('PAGE:', page)
 
   //waits 0.5s before making the fetch request
   const debouncedValue = useDebounce<string>(searchParam, 500);
 
   useEffect(() => {
     (async () => {
+      if (searchParam.length < 1 && isMounted) {
+        console.log('FIRST')
+        setPage(2);
+        await fetchData({ setIsLoading, setSamples, setUserInfo, router });
+        return;
+      }
+
       if (isMounted) {
         await axios.post(`/api/samples/search`, { searchParam, currentPage: page })
           .then((response) => {
             console.log(response)
+            setPage(page + 1);
             const searchedSamples = response.data.samples;
             setSamples(searchedSamples)
           })
@@ -68,6 +77,7 @@ const Page = () => {
 
         setTimeout(async () => {
         const response = await getSamples(page);
+        console.log('RESPONSE:', response)
 
         const newSamples = response.user?.samples
 
@@ -106,11 +116,7 @@ const Page = () => {
 
       <Toaster />
 
-      <div className='flex flex-col gap-4 m-4 mt-10'>
-        <span className='font-bold text-xl justify-center flex mt-2'>
-          Bienvenido {userInfo.name}
-        </span>
-
+      <div className='flex flex-col gap-4 m-4 mt-16'>
         <div className='flex flex-row justify-between px-4 gap-4'>
           <Input 
             placeholder='Ingrese un código de muestra...'
