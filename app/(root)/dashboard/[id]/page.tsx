@@ -8,8 +8,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { SampleSchema, UpdateSampleSchema } from '@/lib/validations/sample';
-import { API_BASE } from '@/constants';
+import { UpdateSampleSchema } from '@/lib/validations/sample';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SampleDetailsCard from '@/components/cards/sample-details-card';
@@ -37,7 +36,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       sampleId: params.id,
     }
 
-    await axios.post(`${API_BASE}/api/samples/update`, payload)
+    await axios.post(`/api/samples/update`, payload)
       .then((response) => {
         toast.success(response.data.message)
 
@@ -63,7 +62,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   //get the sample and researcher information
   useEffect(() => {
     (async () => {
-      await axios.get(`${API_BASE}/api/samples/${params.id}`)
+      await axios.get(`/api/samples/${params.id}`)
         .then((response) => {
           setSample(response.data.sample);
           setResearcher(response.data.sample.researcher);

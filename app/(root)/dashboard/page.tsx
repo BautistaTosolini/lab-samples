@@ -8,7 +8,6 @@ import SampleCard from '@/components/cards/sample-card';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { getSamples } from '@/lib/getSamples';
-import { API_BASE } from '@/constants';
 import TableHeader from '@/components/shared/table-header';
 
 import fetchData from '@/lib/utils/fetchSamples';
@@ -27,7 +26,7 @@ const Page = () => {
 
   //logout button
   const onClick = async () => {
-    await axios.get(`${API_BASE}/api/auth/logout`)
+    await axios.get(`/api/auth/logout`)
 
     router.push('/')
   };

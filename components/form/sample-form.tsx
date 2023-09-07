@@ -12,12 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SampleSchema } from '@/lib/validations/sample';
-import { API_BASE } from '@/constants';
 import { Separator } from '@/components/ui/separator';
 import LoadingSpinner from '@/components/shared/loading-spinner';
 import { Label } from '@/components/ui/label';
 
-import { CustomError, UserInterface } from '@/lib/interfaces/models.interface';
+import { UserInterface } from '@/lib/interfaces/models.interface';
 
 interface SampleFormProps {
   onClick: () => void;
@@ -62,7 +61,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
       observations,
     }
 
-    await axios.post(`${API_BASE}/api/samples/create`, payload)
+    await axios.post(`/api/samples/create`, payload)
       .then(() => {
         toast.success('Muestra creada');
 
@@ -78,7 +77,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
 
   useEffect(() => {
     (async () => {
-      await axios.get(`${API_BASE}/api/users`)
+      await axios.get(`/api/users`)
         .then((response) => {
           setResearchers(response.data.users);
           setIsLoading(false);

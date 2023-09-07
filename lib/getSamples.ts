@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
 
 import { UserInterface } from "./interfaces/models.interface";
-import { API_BASE } from "@/constants";
 
 interface SamplesResponse {
   user: UserInterface | null;
@@ -10,7 +9,7 @@ interface SamplesResponse {
 
 export const getSamples = async (currentPage: Number): Promise<SamplesResponse> => {
   try {
-    const { data } = await axios.post(`${API_BASE}/api/samples`, { currentPage })
+    const { data } = await axios.post(`/api/samples`, { currentPage })
 
     return { user: data.user, error: null }
 

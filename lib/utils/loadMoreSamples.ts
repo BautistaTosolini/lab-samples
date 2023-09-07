@@ -2,8 +2,6 @@ import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
-import { API_BASE } from '@/constants';
-
 import { Samples } from '@/lib/interfaces/models.interface';
 
 interface LoadMoreSamplesParams {
@@ -23,7 +21,7 @@ const loadMoreSamples = ({ isLoading, setIsLoading, scrollEnabled, setScrollEnab
     setScrollEnabled(false);
 
     setTimeout(async () => {
-      await axios.post(`${API_BASE}/api/samples`, { page })
+      await axios.post(`/api/samples`, { page })
         .then((response) => {
           const newSamples = response.data.user.samples;
 
