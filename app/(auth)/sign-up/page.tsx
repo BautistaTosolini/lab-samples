@@ -50,7 +50,13 @@ const Page = () => {
     }
 
     await axios.post(`/api/auth/sign-up`, payload)
-      .then(() => router.push('/dashboard'))
+      .then(() => {
+        toast.success('Cuenta creada');
+
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1000);
+      })
       .catch((error) => toast.error(error.response.data.message));
     
   };

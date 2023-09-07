@@ -41,7 +41,13 @@ const Page = () => {
     }
 
     await axios.post(`/api/auth/sign-in`, payload)
-      .then(() => router.push('/dashboard'))
+      .then(() => {
+        toast.success('Sesión iniciada');
+
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1000);
+      })
       .catch((error) => toast.error(error.response.data.message));
     
   };

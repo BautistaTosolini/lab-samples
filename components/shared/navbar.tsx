@@ -15,13 +15,18 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='bg-gray-400 fixed w-full h-12 flex flex-row items-center justify-between px-10'>
-      <h2 className='text-lg font-bold'>
+    <nav className='bg-primary fixed w-full h-12 flex flex-row items-center justify-between px-10 drop-shadow-2xl'>
+      <h2 className='text-lg font-bold text-white'>
         Muestras de Laboratorio
       </h2>
       <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline'>Mi Cuenta</Button>
+        <Button 
+          variant='outline'
+          className='w-56'
+        >
+          Mi Cuenta
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>

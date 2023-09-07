@@ -1,3 +1,4 @@
+import { CheckSquare, Square } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface SampleCardProps {
@@ -35,22 +36,22 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
         <span className='font-semibold w-32'>
           {sampleType}
         </span>
-        <span className='font-semibold w-56'>
+        <span className='font-semibold w-56 truncate'>
           {observations}
         </span>
       </div>
       <div className='flex gap-2 text-center justify-center ml-3'>
-        <span className='w-20 font-semibold'>
-          {inclusion ? 'v' : 'x'}
+        <span className='w-20 font-semibold justify-center flex'>
+          {inclusion ? <CheckSquare /> : <Square />}
         </span>
-        <span className='w-20 font-semibold'>
-          {semithin ? 'v' : 'x'}
+        <span className='w-20 font-semibold justify-center flex'>
+          {semithin ? <CheckSquare /> : <Square />}
         </span>
-        <span className='w-20 font-semibold'>
-          {thin ? 'v' : 'x'} 
+        <span className='w-20 font-semibold justify-center flex'>
+          {thin ? <CheckSquare /> : <Square />} 
         </span>
-        <span className='w-20 font-semibold'>
-          {grid ? 'v' : 'x'}
+        <span className='w-20 font-semibold justify-center flex'>
+          {grid ? <CheckSquare /> : <Square />}
         </span>
       </div>
     </div>

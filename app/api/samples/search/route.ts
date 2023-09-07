@@ -29,12 +29,22 @@ export async function POST(request: Request) {
     const { userId } = verify(value, secret) as JwtPayload;
     
     connectToDB();
-    
+
     const user = await User.findById(userId);
     
     if (!user) {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
+
+    const skipAmount = (currentPage - 1) * perPage;
+    const samplesRequested = currentPage * perPage;
+
+    const totalSamplesCount = await Sample.countDocuments({
+      $or: [
+        { author: userId }, 
+        { assignedTo: userId },
+      ]
+    });
   
     if (searchParam.length < 1) {
       const samples = await Sample.find({

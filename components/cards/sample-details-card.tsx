@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import InformationCard from '@/components/cards/information-card';
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
+import formatDateTime from '@/lib/utils/formatDateTime';
 
 import { Samples } from '@/lib/interfaces/models.interface';
 
@@ -40,20 +41,20 @@ const SampleDetailsCard = ({ sample, form }: SampleDetailsCardProps) => {
         <Label>
           Observaciones:
         </Label>
-        <InformationCard>
-          {sample.observations}
-        </InformationCard>
+        <div className='min-h-[40px] flex w-full rounded-md border bg-gray-200 px-3 py-2 text-sm my-2'>
+          {sample.observations ? sample.observations : 'Sin observaciones.'}
+        </div>
         <Label>
           Fecha de Creación:
         </Label>
         <InformationCard>
-          {createdAtDate.toLocaleDateString()}
+          {formatDateTime(createdAtDate)}
         </InformationCard>
         <Label>
           Fecha de Actualización:
         </Label>
         <InformationCard>
-          {updatedAtDate.toLocaleDateString()}
+          {formatDateTime(updatedAtDate)}
         </InformationCard>
 
         <FormField
@@ -74,10 +75,10 @@ const SampleDetailsCard = ({ sample, form }: SampleDetailsCardProps) => {
 
         <FormField
           control={form.control}
-          name='thin'
+          name='semithin'
           render={({ field }) => (
             <FormItem className='flex justify-between m-2'>
-              <FormLabel>Fino</FormLabel>
+              <FormLabel>Semi Fino</FormLabel>
               <FormControl>
                 <Checkbox 
                   checked={field.value}
@@ -90,10 +91,10 @@ const SampleDetailsCard = ({ sample, form }: SampleDetailsCardProps) => {
 
         <FormField
           control={form.control}
-          name='semithin'
+          name='thin'
           render={({ field }) => (
             <FormItem className='flex justify-between m-2'>
-              <FormLabel>Semi Fino</FormLabel>
+              <FormLabel>Fino</FormLabel>
               <FormControl>
                 <Checkbox 
                   checked={field.value}
