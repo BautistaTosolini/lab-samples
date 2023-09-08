@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { Search } from 'lucide-react';
+import LoadingSamples from '@/components/shared/loading-samples';
 
 const Page = () => {
   const router = useRouter();
@@ -28,7 +29,6 @@ const Page = () => {
   
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [samplesLength, setSamplesLength] = useState(0);
 
   const [searchParam, setSearchParam] = useState('');
   const [isMounted, setIsMounted] = useState(false);
@@ -46,13 +46,11 @@ const Page = () => {
             const user = response.data.user;
             const samples = response.data.user.samples;
             const hasMore = response.data.hasMore;
-            const samplesLength = response.data.samplesLength;
 
             setUserInfo(user);
             setSamples(samples);
             setPage(newPage + 1);
             setHasMore(hasMore);
-            setSamplesLength(samplesLength);
 
             if (!user) {
               router.push('/')
@@ -68,9 +66,11 @@ const Page = () => {
         await axios.post(`/api/samples/search`, { searchParam, currentPage: newPage })
           .then((response) => {
             const searchedSamples = response.data.samples;
+            const hasMore = response.data.hasMore;
 
             setPage(newPage + 1);
-            setSamples(searchedSamples)
+            setHasMore(hasMore);
+            setSamples(searchedSamples);
           })
           .catch((error) => {
             toast.error(error.response.data.message);
@@ -91,13 +91,11 @@ const Page = () => {
           const user = response.data.user;
           const samples = response.data.user.samples;
           const hasMore = response.data.hasMore;
-          const samplesLength = response.data.samplesLength;
 
           setUserInfo(user);
           setSamples(samples);
           setPage(page + 1);
           setHasMore(hasMore);
-          setSamplesLength(samplesLength);
 
           if (!user) {
             router.push('/')
@@ -129,11 +127,15 @@ const Page = () => {
         })
 
     } else {
+      
       await axios.post(`/api/samples`, { currentPage: page })
         .then((response) => {
           const user = response.data.user;
           const hasMore = response.data.hasMore;
           const newSamples = response.data.user.samples;
+          
+        console.log('HASMORE:', hasMore)
+        console.log('page:', page)
 
           setSamples([...samples!, ...newSamples || []]);
           setPage(page + 1);
@@ -184,11 +186,10 @@ const Page = () => {
 
         <div className='flex flex-col gap-2 h-full'>
           <InfiniteScroll
-            dataLength={samplesLength}
+            dataLength={samples!.length}
             next={getMoreSamples}
             hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-            endMessage={<h4>All samples fetched</h4>}
+            loader={<LoadingSamples />}
           >
             {samples?.map((sample) => {
               return (
