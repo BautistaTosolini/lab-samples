@@ -44,8 +44,8 @@ export async function POST(request: Request) {
       const totalSamplesCount = await Sample.countDocuments({});
 
       // if already sent all samples, returns null
-      if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
-        return NextResponse.json({ user: null }, { status: 200 });
+      if (totalSamplesCount <= samplesRequested && totalSamplesCount < 0) {
+        return NextResponse.json({ user: null, hasMore: false }, { status: 200 });
       }
 
       const samples = await Sample
@@ -60,15 +60,19 @@ export async function POST(request: Request) {
 
       user.samples = samples;
 
-      return NextResponse.json({ user: user }, { status: 200 });
+      if (user.samples.length < samplesRequested) {
+        return NextResponse.json({ user: user, hasMore: false, samplesLength: totalSamplesCount }, { status: 200 });
+      }
+  
+      return NextResponse.json({ user: user, hasMore: true, samplesLength: totalSamplesCount }, { status: 200 });
     }
 
     //if user is researcher only search assigned samples
     const totalSamplesCount = await Sample.countDocuments({ researcher: userId });
 
     // if already sent all samples, returns null
-    if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
-      return NextResponse.json({ user: null }, { status: 200 });
+    if (totalSamplesCount <= samplesRequested && totalSamplesCount < 0) {
+      return NextResponse.json({ user: null, hasMore: false }, { status: 200 });
     }
 
     const samples = await Sample.find({ researcher: userId })
@@ -82,11 +86,11 @@ export async function POST(request: Request) {
 
       user.samples = samples;
 
-    if (user) {
-      return NextResponse.json({ user: user }, { status: 200 });
-    } else {
-      return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
+    if (user.samples.length < samplesRequested) {
+      return NextResponse.json({ user: user, hasMore: false, samplesLength: totalSamplesCount }, { status: 200 });
     }
+
+    return NextResponse.json({ user: user, hasMore: true, samplesLength: totalSamplesCount }, { status: 200 });
 
   } catch (error: any) {
     console.log('GET_SAMPLES:', error.message)

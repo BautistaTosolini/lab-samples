@@ -20,7 +20,7 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
 
   return (
     <div 
-      className='flex gap-2 bg-white rounded-lg p-4 border border-gray-300 hover:bg-gray-400 cursor-pointer'
+      className='flex gap-2 bg-white rounded-lg p-4 border border-gray-300 hover:bg-gray-400 cursor-pointer mb-2'
       onClick={() => router.push(`/dashboard/${_id}`)}
     >
       <div className='flex gap-4 text-center'>

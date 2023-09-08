@@ -29,6 +29,9 @@ export async function POST(request: Request) {
     const { userId } = verify(value, secret) as JwtPayload;
     
     connectToDB();
+    
+    const skipAmount = (currentPage - 1) * perPage;
+    const samplesRequested = currentPage * perPage;
 
     const user = await User.findById(userId);
     
@@ -36,15 +39,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
-    const skipAmount = (currentPage - 1) * perPage;
-    const samplesRequested = currentPage * perPage;
+    //if user is secretary or admin search all samples
+    if (user.role !== 'researcher') {
+      const totalSamplesCount = await Sample.countDocuments({ code: { $regex: new RegExp(searchParam, 'i') } });
 
+      // if already sent all samples, returns null
+      if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
+        return NextResponse.json({ samples: null }, { status: 200 });
+      }
+
+      const samples = await Sample
+        .find({ code: { $regex: new RegExp(searchParam, 'i') } })
+        .sort({ createdAt: -1 })
+        .limit(perPage)
+        // .skip(skipAmount)
+        .populate({
+           path: 'researcher',
+           model: User,
+        });
+
+        console.log(samples)
+
+      user.samples = samples;
+
+      return NextResponse.json({ samples }, { status: 200 });
+    }
+
+
+    
+    //if user is researcher only search assigned samples
     const totalSamplesCount = await Sample.countDocuments({
-      $or: [
-        { author: userId }, 
-        { assignedTo: userId },
-      ]
+      $and: [
+        { researcher: userId },
+        { code: { $regex: new RegExp(searchParam, 'i') } },
+      ],
     });
+
+    // if already sent all samples, returns null
+    if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
+      return NextResponse.json({ samples: null }, { status: 200 });
+    }
   
     if (searchParam.length < 1) {
       const samples = await Sample.find({
@@ -53,10 +87,13 @@ export async function POST(request: Request) {
           sort: { createdAt: -1 },
         },
       })
+      .limit(perPage)
+      .skip(skipAmount)
       .populate({
         path: 'researcher',
         model: User,
-      });
+      })
+      .sort({ createdAt: -1 });
 
       return NextResponse.json({ samples }, { status: 200 });
     }
@@ -72,9 +109,15 @@ export async function POST(request: Request) {
     .populate({
       path: 'researcher',
       model: User,
-    });
+    })
+    .limit(perPage)
+    .skip(skipAmount);
 
-    return NextResponse.json({ samples }, { status: 200 });
+    if (samples.length < samplesRequested) {
+      return NextResponse.json({ samples: samples, hasMore: false, samplesLength: totalSamplesCount }, { status: 200 });
+    }
+
+    return NextResponse.json({ samples: samples, hasMore: true, samplesLength: totalSamplesCount }, { status: 200 });
 
   } catch (error: any) {
     console.log('GET_SAMPLES:', error.message)

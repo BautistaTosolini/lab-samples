@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios'
+import { useState } from 'react';
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { LoginSchema } from '@/lib/validations/auth';
@@ -13,16 +14,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface Error {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
-
 const Page = () => {
   const router = useRouter();
+  const [submiting, setSubmiting] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -33,6 +27,7 @@ const Page = () => {
   })
 
   const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
+    setSubmiting(true);
     const { email, password } = data;
 
     const payload = {
@@ -48,7 +43,10 @@ const Page = () => {
           router.push('/dashboard');
         }, 1000);
       })
-      .catch((error) => toast.error(error.response.data.message));
+      .catch((error) => {
+        toast.error(error.response.data.message);
+        setSubmiting(false);
+      });
     
   };
 
@@ -102,7 +100,12 @@ const Page = () => {
             />
 
             <div className='flex justify-center'>
-              <Button type='submit' className='w-40'>Enviar</Button>
+              <Button 
+                type={submiting ? 'button' : 'submit'} 
+                className={`w-40 ${submiting ? 'cursor-progress hover:bg-primary' : ''}`}
+              >
+                {submiting ? 'Cargando...' : 'Enviar'}
+              </Button>
             </div>
             <span className='text-sm flex justify-center'>
               ¿No tienes una cuenta?

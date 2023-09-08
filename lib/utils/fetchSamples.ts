@@ -10,16 +10,19 @@ interface FetchDataParams {
   setSamples: Dispatch<SetStateAction<Samples[] | null>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   router: AppRouterInstance;
+  currentPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
 }
 
-const fetchData = async ({ setUserInfo, setSamples, setIsLoading, router }: FetchDataParams) => {
-  await axios.post(`/api/samples`, { currentPage: 1 })
+const fetchData = async ({ setUserInfo, setSamples, setIsLoading, router, currentPage, setPage }: FetchDataParams) => {
+  await axios.post(`/api/samples`, { currentPage })
     .then((response) => {
       const user = response.data.user;
       const samples = response.data.user.samples;
 
       setUserInfo(user);
       setSamples(samples);
+      setPage(currentPage + 1);
 
       if (!user) {
         router.push('/')

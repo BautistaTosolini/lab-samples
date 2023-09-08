@@ -24,8 +24,10 @@ const Page = ({ params }: { params: { id: string } }) => {
   const [sample, setSample] = useState<Samples | null>(null);
   const [researcher, setResearcher] = useState<UserInterface | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [submiting, setSubmiting] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof UpdateSampleSchema>) => {
+    setSubmiting(true);
     const { inclusion, semithin, thin, grid } = data;
 
     const payload = {
@@ -38,14 +40,15 @@ const Page = ({ params }: { params: { id: string } }) => {
 
     await axios.post(`/api/samples/update`, payload)
       .then((response) => {
-        toast.success(response.data.message)
+        toast.success(response.data.message);
 
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message || 'Ocurrió un error')
+        toast.error(error.response?.data?.message || 'Ocurrió un error');
+        setSubmiting(false);
       })
   }
 
@@ -122,11 +125,12 @@ const Page = ({ params }: { params: { id: string } }) => {
                 >
                   Volver
                 </Button>
-                <Button
-                  className='w-full'
-                >
-                  Guardar
-                </Button>
+                <Button 
+                type={submiting ? 'button' : 'submit'} 
+                className={`w-full ${submiting ? 'cursor-progress' : ''}`}
+              >
+                {submiting ? 'Cargando...' : 'Guardar'}
+              </Button>
               </div>
 
             </form>
