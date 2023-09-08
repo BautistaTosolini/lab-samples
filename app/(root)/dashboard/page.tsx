@@ -48,11 +48,6 @@ const Page = () => {
             const hasMore = response.data.hasMore;
             const samplesLength = response.data.samplesLength;
 
-            console.log('1 - INTIAL PAGE REQUEST:', newPage)
-            console.log('2 - INITIAL RESPONSE:', response.data)
-            console.log('3 - HASMORE:', hasMore)
-            console.log('4 - samplesLength:', samplesLength)
-
             setUserInfo(user);
             setSamples(samples);
             setPage(newPage + 1);
@@ -65,23 +60,20 @@ const Page = () => {
 
           })
           .catch((error) => {
-            console.log(error)
+            toast.error(error.response.data.message);
           })
       }
 
       if (isMounted) {
         await axios.post(`/api/samples/search`, { searchParam, currentPage: newPage })
           .then((response) => {
-            console.log('SEARCHED RESPONSE:', response.data)
-            console.log('SEARCH PARAMS:', searchParam)
-            console.log('SEARCHED PAGE:', newPage)
             const searchedSamples = response.data.samples;
 
             setPage(newPage + 1);
             setSamples(searchedSamples)
           })
           .catch((error) => {
-            console.log(error)
+            toast.error(error.response.data.message);
           })
       }
     }
@@ -100,8 +92,6 @@ const Page = () => {
           const samples = response.data.user.samples;
           const hasMore = response.data.hasMore;
           const samplesLength = response.data.samplesLength;
-
-          console.log('INITIAL RESPONSE:', response.data)
 
           setUserInfo(user);
           setSamples(samples);
@@ -123,16 +113,10 @@ const Page = () => {
   //get more samples when scrolling down
   const getMoreSamples = async () => {
     if (searchParam.length === 0) {
-      console.log('[========SEARCHING MORE WITHOUT PARAMS========]')
       setPage(page + 1);
-
-      if (page > 3) {
-        setHasMore(false)
-      }
 
       await axios.post(`/api/samples`, { currentPage: page })
         .then((response) => {
-          console.log('RESPONSE:', response.data)
           const newSamples = response.data.user.samples;
           const hasMore = response.data.hasMore;
 
@@ -141,11 +125,10 @@ const Page = () => {
           setHasMore(hasMore);
         })
         .catch((error) => {
-          console.log(error);
+          toast.error(error.response.data.message);
         })
 
     } else {
-      console.log('[========SEARCHING MORE WITH PARAMS========]')
       await axios.post(`/api/samples`, { currentPage: page })
         .then((response) => {
           const user = response.data.user;
@@ -162,16 +145,10 @@ const Page = () => {
 
         })
         .catch((error) => {
-          toast.error(error.response.data.message)
+          toast.error(error.response.data.message);
         })
     }
   }
-
-  console.log('PAGE:', page)
-  console.log('hasMore:', hasMore)
-  console.log('samplesLength:', samplesLength)
-  console.log('searchParam length:', searchParam.length)
-  console.log('-----------')
 
   //if userinfo is null show a loading screen
   if (!userInfo) {
