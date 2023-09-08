@@ -49,7 +49,6 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
   });
 
   const selectResearcher = (researcher: UserInterface) => {
-    console.log('PASSED VALUE', researcher)
     setSelectedResearcher(researcher)
 
     const first = researcher?.name[0].toUpperCase();
@@ -61,21 +60,6 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
       setCode(result);
     } 
   }
-
-  // useEffect(() => {
-  //   if (researchers) {
-  //     setSelectedResearcher(researchers.find((researcher) => researcher.email === value))
-  //   }
-
-  //   const first = selectedResearcher?.name[0].toUpperCase();
-  //   const last = selectedResearcher?.lastname[0].toUpperCase();
-
-  //   if (first && last && selectedResearcher) {
-  //     const result = first + last + '-' + selectedResearcher.samples.length;
-
-  //     setCode(result);
-  //   } 
-  // }, [value])
 
   const onSubmit = async (data: z.infer<typeof SampleSchema>) => {
     setSubmiting(true);
@@ -147,8 +131,8 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                 </PopoverTrigger>
                 <PopoverContent className='w-full p-0'>
                   <Command>
-                    <CommandInput placeholder='Search framework...' />
-                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandInput placeholder='Buscar investigador...' />
+                    <CommandEmpty>Ningún investigador encontrado.</CommandEmpty>
                     <CommandGroup>
                       {researchers.map((researcher) => (
                         <CommandItem
