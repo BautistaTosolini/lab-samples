@@ -106,7 +106,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
     <Card>
       <Toaster />
       <CardHeader>
-        <CardTitle>Modificar Muestra</CardTitle>
+        <CardTitle>Agregar Muestra</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>
       </CardHeader>
       <CardContent>

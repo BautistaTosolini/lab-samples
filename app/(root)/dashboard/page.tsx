@@ -185,30 +185,33 @@ const Page = () => {
         <TableHeader />
 
         <div className='flex flex-col gap-2 h-full'>
-          <InfiniteScroll
-            dataLength={samples!.length}
-            next={getMoreSamples}
-            hasMore={hasMore}
-            loader={<LoadingSamples />}
-          >
-            {samples?.map((sample) => {
-              return (
-                <SampleCard 
-                  key={`${sample._id}-${sample.code}-${sample.date}`}
-                  code={sample.code}
-                  date={sample.createdAt}
-                  researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
-                  sampleType={sample.sampleType}
-                  observations={sample.observations}
-                  inclusion={sample.inclusion}
-                  semithin={sample.semithin}
-                  thin={sample.thin}
-                  grid={sample.grid}
-                  _id={sample._id}
-                />
-              )
-            })}
-          </InfiniteScroll>
+          {samples!.length === 0 ? 
+            <h1 className='text-center font-semibold text-lg'>Ninguna muestra encontrada.</h1> :
+            <InfiniteScroll
+              dataLength={samples!.length}
+              next={getMoreSamples}
+              hasMore={hasMore}
+              loader={<LoadingSamples />}
+            >
+              {samples?.map((sample) => {
+                return (
+                  <SampleCard 
+                    key={`${sample._id}-${sample.code}-${sample.date}`}
+                    code={sample.code}
+                    date={sample.createdAt}
+                    researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
+                    sampleType={sample.sampleType}
+                    observations={sample.observations}
+                    inclusion={sample.inclusion}
+                    semithin={sample.semithin}
+                    thin={sample.thin}
+                    grid={sample.grid}
+                    _id={sample._id}
+                  />
+                )
+              })}
+            </InfiniteScroll>
+          }
         </div>
       </div>
     </>
