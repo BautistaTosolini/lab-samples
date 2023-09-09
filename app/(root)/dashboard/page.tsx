@@ -48,18 +48,18 @@ const Page = () => {
             setSamples(samples);
             setPage(newPage + 1);
             setHasMore(hasMore);
-
+            
             if (!user) {
-              router.push('/')
+              router.push('/');
             }
-
+            
           })
           .catch((error) => {
             toast.error(error.response.data.message);
           })
       }
 
-      if (isMounted) {
+      if (searchParam.length > 0 && isMounted) {
         await axios.post(`/api/samples/search`, { searchParam, currentPage: newPage })
           .then((response) => {
             const searchedSamples = response.data.samples;
