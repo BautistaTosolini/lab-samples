@@ -9,10 +9,10 @@ import SampleCard from '@/components/cards/SampleCard';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import TableHeader from '@/components/shared/TableHeader';
 import toast, { Toaster } from 'react-hot-toast';
-import Navbar from '@/components/shared/Navbar';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Label } from '@/components/ui/label';
+import Navbar from '@/components/shared/Navbar';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { Search } from 'lucide-react';
