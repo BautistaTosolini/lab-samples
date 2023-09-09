@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
-import { connectToDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME, PER_PAGE } from '@/constants';
 import Sample from '@/lib/models/sample.model';
@@ -57,8 +57,6 @@ export async function POST(request: Request) {
            path: 'researcher',
            model: User,
         });
-
-        console.log(samples)
 
       user.samples = samples;
 
@@ -120,7 +118,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ samples: samples, hasMore: true, samplesLength: totalSamplesCount }, { status: 200 });
 
   } catch (error: any) {
-    console.log('GET_SAMPLES:', error.message)
+    console.log('POST - /api/samples/search:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

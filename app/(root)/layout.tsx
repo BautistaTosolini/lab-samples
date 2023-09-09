@@ -1,28 +1,33 @@
 'use client';
 
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-import LoadingSpinner from '@/components/shared/loading-spinner';
-import { getUser } from '@/lib/getUser';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    (async () => {
-      const { user, error } = await getUser();
+    const authenticateUser = async () => {
+      await axios.get('/api/auth/authenticate')
+        .then((response) => {
+          const user = response.data.user;
 
-      if (error) {
-        router.push(`/`);
-        return;
-      }
+          if (user) {
+            setIsAuthenticated(true);
+          } else {
+            router.push(`/`);
+          }
+        })
+        .catch((error) => {
+          router.push(`/`)
+        })
+    }
 
-      setIsAuthenticated(true);
-
-    })()
+    authenticateUser();
   }, [router])
 
   if (!isAuthenticated) {

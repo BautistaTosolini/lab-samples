@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
-import { connectToDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 import Sample from '@/lib/models/sample.model';
@@ -29,6 +29,12 @@ export async function POST(request: Request) {
 
     connectToDB();
 
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
+    }
+
     const updatedSample = await Sample.findByIdAndUpdate(sampleId, {
       inclusion,
       thin,
@@ -39,7 +45,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Muestra actualizada' }, { status: 200 });
 
   } catch (error: any) {
-    console.log('GET_SAMPLES:', error.message)
+    console.log('POST - /api/samples/update:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

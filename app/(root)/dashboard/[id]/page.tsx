@@ -9,10 +9,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { UpdateSampleSchema } from '@/lib/validations/sample';
-import LoadingSpinner from '@/components/shared/loading-spinner';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SampleDetailsCard from '@/components/cards/sample-details-card';
-import ResearcherDetailsCard from '@/components/cards/researcher-details-card';
+import SampleDetailsCard from '@/components/cards/SampleDetailsCard';
+import ResearcherDetailsCard from '@/components/cards/ResearcherDetailsCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -23,6 +23,9 @@ const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const [sample, setSample] = useState<Samples | null>(null);
   const [researcher, setResearcher] = useState<UserInterface | null>(null);
+
+  const [userInfo, setUserInfo] = useState<UserInterface | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [submiting, setSubmiting] = useState(false);
 
@@ -62,9 +65,9 @@ const Page = ({ params }: { params: { id: string } }) => {
     },
   });
 
-  //get the sample and researcher information
+  //get the sample, researcher and user information
   useEffect(() => {
-    (async () => {
+    const fetchSampleData = async () => {
       await axios.get(`/api/samples/${params.id}`)
         .then((response) => {
           setSample(response.data.sample);
@@ -77,13 +80,28 @@ const Page = ({ params }: { params: { id: string } }) => {
             grid: response.data.sample.grid,
           });
         })
-        .catch((error) => toast.error(error.message));
-    })()
-  }, [router, params.id, form])
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
 
-  console.log(sample)
+    const fetchUserData = async () => {
+      await axios.get(`/api/auth/authenticate`)
+        .then((response) => {
+          const user = response.data.user;
+          
+          setUserInfo(user);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
 
-  if (isLoading) {
+    fetchSampleData();
+    fetchUserData();
+  }, [])
+
+  if (isLoading || !userInfo) {
     return <LoadingSpinner />
   }
 
@@ -108,6 +126,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                 <SampleDetailsCard 
                   sample={sample}
                   form={form}
+                  user={userInfo!}
                 />
               </TabsContent>
 
@@ -125,12 +144,14 @@ const Page = ({ params }: { params: { id: string } }) => {
                 >
                   Volver
                 </Button>
-                <Button 
-                type={submiting ? 'button' : 'submit'} 
-                className={`w-full ${submiting ? 'cursor-progress' : ''}`}
-              >
-                {submiting ? 'Cargando...' : 'Guardar'}
-              </Button>
+                {userInfo.role !== 'researcher' ?
+                  <Button 
+                  type={submiting ? 'button' : 'submit'} 
+                  className={`w-full ${submiting ? 'cursor-progress' : ''}`}
+                  >
+                  {submiting ? 'Cargando...' : 'Guardar'}
+                  </Button>
+                : null}
               </div>
 
             </form>

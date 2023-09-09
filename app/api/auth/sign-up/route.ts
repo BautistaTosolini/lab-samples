@@ -2,7 +2,7 @@ import { sign } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
-import { connectToDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME, MAX_AGE } from '@/constants';
 
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Autenticado' }, { status: 200, headers: { 'Set-Cookie': serialized } });
 
   } catch (error: any) {
-    console.log('POST_SIGN-UP:', error.message)
+    console.log('POST - /api/auth/sign-up:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 })
   }
 };

@@ -21,6 +21,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         Muestras de Laboratorio
       </h2>
       <div className='flex gap-6'>
+        {user.role !== 'researcher' ?
         <Button 
           variant='outline'
           className='w-56 bg-primary text-white hover:text-black'
@@ -28,6 +29,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         >
           Agregar Muestra
         </Button>
+        : null}
         <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 

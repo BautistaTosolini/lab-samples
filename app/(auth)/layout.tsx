@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: 'Muestras de Laboratorio',
-  description: 'A Next.js 13 Project'
+  description: 'Un proyecto de Next.js 13'
 };
 
 const inter = Inter({ subsets: ['latin'] });

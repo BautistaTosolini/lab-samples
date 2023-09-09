@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
-import { connectToDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 import Sample from '@/lib/models/sample.model';
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
   } catch (error: any) {
-    console.log('GET_SINGLESAMPLE:', error.message)
+    console.log('GET - /api/samples/[id]:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

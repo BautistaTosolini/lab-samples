@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import InformationCard from '@/components/cards/information-card';
-import { Button } from '@/components/ui/button';
+import InformationCard from '@/components/cards/InformationCard';
+import formatDateTime from '@/lib/utils/formatDateTime';
 
-import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
+import { UserInterface } from '@/lib/interfaces/models.interface';
 
 const ResearcherDetailsCard = ({ researcher }: { researcher: UserInterface }) => {
   const createdAtDate = new Date(researcher.createdAt)
@@ -30,7 +30,7 @@ const ResearcherDetailsCard = ({ researcher }: { researcher: UserInterface }) =>
           Fecha de Registro:
         </Label>
         <InformationCard>
-          {createdAtDate.toLocaleDateString()}
+          {formatDateTime(createdAtDate)}
         </InformationCard>
 
       </>

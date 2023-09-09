@@ -3,33 +3,43 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
-import SampleForm from '@/components/form/sample-form';
-import { getUser } from '@/lib/getUser';
+import SampleForm from '@/components/form/SampleForm';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 import { UserInterface } from '@/lib/interfaces/models.interface';
 
 const Page = () => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInterface | null>(null);
-
-  let code = '';
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const { user, error } = await getUser();
-  
-      if (error) {
-        router.push('/');
-        return;
-      }
+    const authenticateUser = async () => {
+      await axios.get('/api/auth/authenticate')
+        .then((response) => {
+          const user = response.data.user;
 
-      if (user) {
-        setUserInfo(user);
-      }
+          if (!user || user.role === 'researcher') {
+            router.push('/dashboard');
+            return;
+          }
 
-    })()
+          setUserInfo(user);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          router.push('/dashboard')
+        })
+    }
+
+    authenticateUser();
   }, [router])
+
+  if (isLoading) {
+    return <LoadingSpinner />
+  }
 
   return (
     <div className='m-4'>

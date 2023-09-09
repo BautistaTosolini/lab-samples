@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 import bcrypt from 'bcryptjs';
 
-import { connectToDB } from '@/lib/mongoose';
+import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME, MAX_AGE } from '@/constants';
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     }
 
   } catch (error: any) {
-    console.log('POST_SIGN-IN:', error.message)
+    console.log('POST - /api/auth/sign-in:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 })
   }
 };

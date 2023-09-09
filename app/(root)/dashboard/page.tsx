@@ -5,21 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import SampleCard from '@/components/cards/sample-card';
-import { Button } from '@/components/ui/button';
-import LoadingSpinner from '@/components/shared/loading-spinner';
-import { getSamples } from '@/lib/getSamples';
-import TableHeader from '@/components/shared/table-header';
+import SampleCard from '@/components/cards/SampleCard';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import TableHeader from '@/components/shared/TableHeader';
 import toast, { Toaster } from 'react-hot-toast';
-import fetchData from '@/lib/utils/fetchSamples';
-import Navbar from '@/components/shared/navbar';
+import Navbar from '@/components/shared/Navbar';
 import { Input } from '@/components/ui/input';
-import { useDebounce } from '@/hooks/use-debounce';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Label } from '@/components/ui/label';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { Search } from 'lucide-react';
-import LoadingSamples from '@/components/shared/loading-samples';
+import LoadingSamples from '@/components/shared/LoadingSamples';
 
 const Page = () => {
   const router = useRouter();
@@ -98,12 +95,12 @@ const Page = () => {
           setHasMore(hasMore);
 
           if (!user) {
-            router.push('/')
+            router.push('/');
           }
 
         })
         .catch((error) => {
-          toast.error(error.response.data.message)
+          toast.error(error.response.data.message);
         })
     })()
   }, [])
@@ -133,9 +130,6 @@ const Page = () => {
           const user = response.data.user;
           const hasMore = response.data.hasMore;
           const newSamples = response.data.user.samples;
-          
-        console.log('HASMORE:', hasMore)
-        console.log('page:', page)
 
           setSamples([...samples!, ...newSamples || []]);
           setPage(page + 1);

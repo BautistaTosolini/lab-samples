@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SampleSchema } from '@/lib/validations/sample';
 import { Separator } from '@/components/ui/separator';
-import LoadingSpinner from '@/components/shared/loading-spinner';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Label } from '@/components/ui/label';
 
 import { UserInterface } from '@/lib/interfaces/models.interface';
