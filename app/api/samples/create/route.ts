@@ -6,6 +6,7 @@ import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 import Sample from '@/lib/models/sample.model';
+import { transporter } from '@/config/mailer';
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -53,13 +54,32 @@ export async function POST(request: Request) {
       grid,
     })
 
-    await User.findByIdAndUpdate(researcher, {
+    const updatedResearcher = await User.findByIdAndUpdate(researcher, {
       $push: { samples: sample._id }
     })
     
-    const response = { message: 'Muestra creada' }
+    const mailer = process.env.MAILER;
 
-    return new Response(JSON.stringify(response));
+    await transporter.sendMail({
+      from: `"Muestra Agregada" <${mailer}>`,
+      to: updatedResearcher.email,
+      subject: 'Muestra agregada',
+      html: `
+        <div>
+          <h1>
+            Muestras de Laboratorio
+          </h1>
+          <p>
+            Su muestra ${sampleType} ha sido cargada correctamente.
+          </p>
+          <p>
+            Código de Muestra: ${code}
+          </p>
+        </div>
+      `
+    })
+
+    return NextResponse.json({ message: 'Muestra creada' }, { status: 200 })
 
   } catch (error: any) {
     console.log('POST - /api/samples/create:', error.message)

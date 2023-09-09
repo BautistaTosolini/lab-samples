@@ -5,6 +5,7 @@ import { verify, JwtPayload } from 'jsonwebtoken';
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
+import { transporter } from '@/config/mailer';
 import Sample from '@/lib/models/sample.model';
 
 export async function POST(request: Request) {
@@ -35,11 +36,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
-    const updatedSample = await Sample.findByIdAndUpdate(sampleId, {
+    await Sample.findByIdAndUpdate(sampleId, {
       inclusion,
       thin,
       semithin,
       grid
+    })
+
+    const sample = await Sample.findById(sampleId)
+      .populate({
+        path: 'researcher',
+        model: User,
+      });
+
+    const mailer = process.env.MAILER;
+
+    await transporter.sendMail({
+      from: `"Muestra Agregada" <${mailer}>`,
+      to: sample.researcher.email,
+      subject: 'Muestra agregada',
+      html: `
+        <div>
+          <h1>
+            Muestras de Laboratorio
+          </h1>
+          <p>
+            Su muestra ${sample.sampleType} ha sido actualizada.
+          </p>
+        </div>
+      `
     })
 
     return NextResponse.json({ message: 'Muestra actualizada' }, { status: 200 });
