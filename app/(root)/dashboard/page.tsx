@@ -64,6 +64,7 @@ const Page = () => {
           .then((response) => {
             const searchedSamples = response.data.samples;
             const hasMore = response.data.hasMore;
+            console.log(response.data)
 
             setPage(newPage + 1);
             setHasMore(hasMore);
@@ -125,7 +126,7 @@ const Page = () => {
 
     } else {
       
-      await axios.post(`/api/samples`, { currentPage: page })
+      await axios.post(`/api/samples`, { searchParam, currentPage: page })
         .then((response) => {
           const user = response.data.user;
           const hasMore = response.data.hasMore;

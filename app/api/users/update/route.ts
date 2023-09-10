@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ user }, { status: 200 });
 
   } catch (error: any) {
-    console.log('POST - /api/update:', error.message)
+    console.log('POST - /api/users/update:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

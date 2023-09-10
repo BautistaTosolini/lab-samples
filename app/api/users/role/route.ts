@@ -1,12 +1,16 @@
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
 
-export async function GET() {
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+
+ const {updateUserId, role} = body;
+
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -24,22 +28,23 @@ export async function GET() {
 
     connectToDB();
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId)
 
-    if (!user || user.role === 'researcher') {
+    if (!user || user.role !== 'admin') {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
-    const users = await User.find({ role: 'researcher' });
+    await User.findByIdAndUpdate(updateUserId, { role });
 
-    if (!users) {
-      return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
-    }
+    const users = await User
+    .find({ _id: { $ne: userId } })
+    .select('-password');
 
-    return NextResponse.json({ users: users }, { status: 200 });
+
+    return NextResponse.json({ users }, { status: 200 });
 
   } catch (error: any) {
-    console.log('GET - /api/users:', error.message)
+    console.log('POST - /api/users/role:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

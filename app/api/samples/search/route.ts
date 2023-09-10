@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 
       user.samples = samples;
 
-      return NextResponse.json({ samples }, { status: 200 });
+      return NextResponse.json({ samples, hasMore: true }, { status: 200 });
     }
 
 
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     // if already sent all samples, returns null
     if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
-      return NextResponse.json({ samples: null }, { status: 200 });
+      return NextResponse.json({ samples: null, hasMore: false }, { status: 200 });
     }
   
     if (searchParam.length < 1) {

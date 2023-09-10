@@ -26,11 +26,13 @@ export async function GET() {
 
     const user = await User.findById(userId);
 
-    if (!user || user.role === 'researcher') {
+    if (!user || user.role !== 'admin') {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
-    const users = await User.find({ role: 'researcher' });
+    const users = await User
+      .find({ _id: { $ne: userId } })
+      .select('-password');
 
     if (!users) {
       return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
@@ -39,7 +41,7 @@ export async function GET() {
     return NextResponse.json({ users: users }, { status: 200 });
 
   } catch (error: any) {
-    console.log('GET - /api/users:', error.message)
+    console.log('GET - /api/users/list:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };
