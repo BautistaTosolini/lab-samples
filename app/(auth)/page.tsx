@@ -98,6 +98,15 @@ const Page = () => {
                 </FormItem>
               )}
             />
+            <span className='text-xs flex'>
+              ¿Contraseña olvidada?
+                <span 
+                  className='text-purple-800 cursor-pointer mx-1'
+                  onClick={() => router.push('/recover')}
+                >
+                  Reestablecer.
+                </span> 
+            </span>
 
             <div className='flex justify-center'>
               <Button 

@@ -33,7 +33,9 @@ export async function POST(request: Request) {
     const skipAmount = (currentPage - 1) * perPage;
     const samplesRequested = currentPage * perPage;
 
-    const user = await User.findById(userId);
+    const user = await User
+      .findById(userId)
+      .select('-password');
     
     if (!user) {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
@@ -56,6 +58,7 @@ export async function POST(request: Request) {
         .populate({
            path: 'researcher',
            model: User,
+           select: '-password',
         });
 
       user.samples = samples;
@@ -90,6 +93,7 @@ export async function POST(request: Request) {
       .populate({
         path: 'researcher',
         model: User,
+        select: '-password',
       })
       .sort({ createdAt: -1 });
 
@@ -107,6 +111,7 @@ export async function POST(request: Request) {
     .populate({
       path: 'researcher',
       model: User,
+      select: '-password',
     })
     .limit(perPage)
     .skip(skipAmount);

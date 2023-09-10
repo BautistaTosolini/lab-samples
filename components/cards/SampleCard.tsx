@@ -24,16 +24,16 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
       onClick={() => router.push(`/dashboard/${_id}`)}
     >
       <div className='flex gap-4 text-center'>
-        <span className='font-semibold w-20'>
+        <span className='font-semibold w-20 truncate'>
           {code}
         </span>
-        <span className='font-semibold w-36'>
+        <span className='font-semibold w-36 truncate'>
           {finalDate.toLocaleDateString()}
         </span>
-        <span className='font-semibold w-40'>
+        <span className='font-semibold w-40 truncate'>
           {researcher}
         </span>
-        <span className='font-semibold w-32'>
+        <span className='font-semibold w-32 truncate'>
           {sampleType}
         </span>
         <span className='font-semibold w-56 truncate'>

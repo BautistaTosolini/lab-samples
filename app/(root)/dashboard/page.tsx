@@ -153,10 +153,6 @@ const Page = () => {
 
   return (
     <>
-      <Navbar
-        user={userInfo}
-      />
-
       <Toaster />
 
       <div className='flex flex-col gap-4 m-4 mt-16'>

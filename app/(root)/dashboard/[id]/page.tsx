@@ -110,7 +110,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Tabs defaultValue='details' className='w-[400px] m-4 gap-4 flex flex-col'>
+    <Tabs defaultValue='details' className='w-[400px] m-4 gap-4 flex flex-col mt-16'>
       <TabsList className='w-full flex justify-between'>
         <TabsTrigger value='details' className='w-full'>Detalles</TabsTrigger>
         <TabsTrigger value='researcher' className='w-full'>Investigador</TabsTrigger>

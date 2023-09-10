@@ -32,8 +32,6 @@ export async function POST(request: Request) {
         maxAge: MAX_AGE,
         path: '/',
       });
-
-      const response = { message: 'Autenticado' };
   
       return NextResponse.json({ message: 'Autenticado' }, { status: 200, headers: { 'Set-Cookie': serialized } });
     } else {

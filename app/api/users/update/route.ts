@@ -5,10 +5,11 @@ import { verify, JwtPayload } from 'jsonwebtoken';
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
-import Sample from '@/lib/models/sample.model';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const sampleId = params.id
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+
+ const {email, password} = body;
 
   const cookieStore = cookies();
 
@@ -27,25 +28,26 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     connectToDB();
 
-    const user = await User
-      .findById(userId)
-      .select('-password');
+    const user = await User.findById(userId)
 
-    const sample = await Sample.findById(sampleId)
-      .populate({
-        path: 'researcher',
-        model: User,
-        select: '-password'
-      });
-
-    if (user) {
-      return NextResponse.json({ user, sample }, { status: 200 });
-    } else {
-      return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
+    if (!user) {
+      return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
+    if (email?.length > 0) {
+      user.email = email;
+    }
+
+    if (password?.length > 0) {
+      user.password = password;
+    }
+
+    await user.save();
+
+    return NextResponse.json({ user }, { status: 200 });
+
   } catch (error: any) {
-    console.log('GET - /api/samples/[id]:', error.message)
+    console.log('POST - /api/update:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

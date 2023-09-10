@@ -26,18 +26,20 @@ export async function GET() {
     connectToDB();
 
     const user = await User.findById(userId)
-  .populate({
-    path: 'samples',
-    model: Sample,
-    options: {
-      sort: { createdAt: -1 },
-      limit: 15,
-    },
-    populate: {
-      path: 'researcher',
-      model: User,
-    },
-  });
+      .populate({
+        path: 'samples',
+        model: Sample,
+        options: {
+          sort: { createdAt: -1 },
+          limit: 15,
+        },
+        populate: {
+          path: 'researcher',
+          model: User,
+          select: '-password'
+        },
+      })
+      .select('-password');
 
     if (user) {
       return NextResponse.json({ user }, { status: 200 });

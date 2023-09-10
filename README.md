@@ -41,10 +41,10 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) an
 
 ```bash
 # Clone this project
-$ git clone https://github.com/BautistaTosolini/threads-clone
+$ git clone https://github.com/BautistaTosolini/lab-samples
 
 # Access
-$ cd threads-clone
+$ cd lab-samples
 
 # Install dependencies
 $ npm install

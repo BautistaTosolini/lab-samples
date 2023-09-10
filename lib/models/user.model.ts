@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['researcher', 'secretary'],
+    enum: ['researcher', 'secretary', 'admin'],
     default: 'researcher',
   },
   samples: [
@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
       ref: 'Sample',
     }
   ],
+  recoveryToken: {
+    type: String,
+  }
 }, {
   timestamps: true
 });

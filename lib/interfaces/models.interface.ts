@@ -18,7 +18,7 @@ export interface UserInterface {
   email: string;
   name: string;
   lastname: string;
-  role: 'researcher' | 'secretary';
+  role: 'researcher' | 'secretary' | 'admin';
   samples: Samples[];
   _id: string;
   createdAt: string;
