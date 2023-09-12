@@ -27,20 +27,20 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
         <span className='font-semibold w-20 truncate'>
           {code}
         </span>
-        <span className='font-semibold w-36 truncate'>
+        <span className='font-semibold w-34 truncate sm:w-36'>
           {finalDate.toLocaleDateString()}
         </span>
-        <span className='font-semibold w-40 truncate'>
+        <span className='font-semibold w-40 truncate hidden sm:inline'>
           {researcher}
         </span>
         <span className='font-semibold w-32 truncate'>
           {sampleType}
         </span>
-        <span className='font-semibold w-56 truncate'>
+        <span className='font-semibold w-56 truncate hidden sm:inline'>
           {observations}
         </span>
       </div>
-      <div className='flex gap-2 text-center justify-center ml-3'>
+      <div className='gap-2 text-center justify-center ml-3 hidden sm:flex'>
         <span className='w-20 font-semibold justify-center flex'>
           {inclusion ? <CheckSquare /> : <Square />}
         </span>

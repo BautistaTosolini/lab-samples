@@ -158,10 +158,11 @@ const Page = () => {
 
       <div className='flex flex-col gap-4 m-4 mt-16'>
         <div className='flex flex-row justify-between items-center gap-2 px-10'>
-          <Label className='w-96 font-semibold text-lg'>
+          <Label className='w-96 font-semibold text-lg hidden sm:flex'>
             Buscar por código de muestra:
           </Label>
-          <div className='bg-white rounded-lg flex flex-row w-full items-center'>
+
+          <div className='bg-white rounded-lg flex-row w-full items-center hidden sm:flex'>
             <Input
               className='w-full border-none focus-visible:outline-none'
               value={searchParam}
@@ -171,6 +172,19 @@ const Page = () => {
               className='mx-4'
             />
           </div>
+
+          <div className='bg-white rounded-lg flex flex-row w-full items-center sm:hidden'>
+            <Input
+              className='w-full border-none focus-visible:outline-none'
+              value={searchParam}
+              onChange={(e) => setSearchParam(e.target.value)}
+              placeholder='Buscar por código...'
+            />
+            <Search 
+              className='mx-4'
+            />
+          </div>
+
         </div>
 
         <TableHeader />

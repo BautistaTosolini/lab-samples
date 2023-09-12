@@ -78,7 +78,7 @@ const Page = () => {
     )
   }
 
-  const canSubmit = (email !== user.email && canEditEmail) || (password === confirmPassword && password.length > 0 && canEditPassword)
+  const canSubmit = (email !== user.email && canEditEmail && password === confirmPassword) || (password === confirmPassword && password.length > 0 && canEditPassword)
 
   const buttonClassnames = `w-40 ${submiting ? 'cursor-progress bg-gray-500 text-white hover:bg-gray-500' : ''} ${canSubmit ? '' : 'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500'}`
   const createdAtDate = new Date(user!.createdAt);
@@ -86,7 +86,7 @@ const Page = () => {
   return (
     <>
       <div className='justify-center items-center mt-16'>
-        <Card className='w-[450px]'>
+        <Card className='w-[350px] sm:w-[450px]'>
           <Toaster />
           <CardHeader>
             <CardTitle>Configuración de Cuenta</CardTitle>

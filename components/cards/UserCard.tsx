@@ -34,24 +34,24 @@ const UserCard = ({ user, onClick, submiting }: UserCardProps) => {
         key={user._id}
       >
         <div className='flex gap-4 text-center items-center'>
-          <span className='font-semibold w-40 truncate'>
+          <span className='font-semibold w-40 truncate hidden sm:inline'>
             {user.name}
           </span>
-          <span className='font-semibold w-40 truncate'>
+          <span className='font-semibold w-40 truncate hidden sm:inline'>
             {user.lastname}
           </span>
-          <span className='font-semibold w-72 truncate'>
+          <span className='font-semibold w-48 truncate sm:w-72'>
             {user.email}
           </span>
 
-          <span className='font-semibold w-56'>
+          <span className='font-semibold w-32 sm:w-56'>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant='outline'
                   role='combobox'
                   aria-expanded={open}aria-atomic
-                  className='w-[200px] justify-between font-semibold'
+                  className='w-32 justify-between font-semibold'
                 >
                   {value ? (value === 'researcher' ? 'Investigador' : 'Secretaria') : (user.role === 'researcher' ? 'Investigador' : 'Secretaria')}
                   <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />

@@ -1,6 +1,9 @@
+'use client'
+
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Home, LogOut, Plus, Settings, Users } from 'lucide-react';
+import { Home, LogOut, Menu, Plus, Settings, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -9,6 +12,7 @@ import { UserInterface } from '@/lib/interfaces/models.interface';
 
 const Navbar = ({ user }: { user: UserInterface }) => {
   const router = useRouter();
+  const [userIsMobile, setUserIsMobile] = useState(false);
 
   const onClick = async () => {
     await axios.get(`/api/auth/logout`)
@@ -16,24 +20,48 @@ const Navbar = ({ user }: { user: UserInterface }) => {
     router.push('/')
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setUserIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <nav className='bg-primary fixed w-full h-12 flex flex-row items-center justify-between px-14 drop-shadow-2xl'>
+    <nav className='bg-primary fixed w-full h-12 flex flex-row items-center justify-end px-14 sm:justify-between drop-shadow-2xl'>
       <h2 
-        className='text-lg font-bold text-white cursor-pointer'
+        className='text-lg font-bold text-white cursor-pointer hidden sm:flex'
         onClick={() => router.push('/dashboard')}
       >
         Muestras de Laboratorio
       </h2>
       <div className='flex gap-6'>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+
+          {userIsMobile ?
+          <DropdownMenuTrigger asChild className='flex sm:hidden'>
+              <Menu className='h-6 w-6 text-white cursor-pointer' />
+          </DropdownMenuTrigger>
+
+          :
+          
+          <DropdownMenuTrigger asChild className='hidden sm:flex'>
             <Button 
-              variant='outline'
+              variant='outline' 
               className='w-36 bg-primary text-white hover:text-black'
-            >
+              >
               Menu
             </Button>
           </DropdownMenuTrigger>
+            }
+
           <DropdownMenuContent className='w-56'>
             <DropdownMenuLabel className='pb-0'>Menu</DropdownMenuLabel>
             <span className='text-xs ml-2 font-semibold'>{user.name} {user.lastname}</span>
