@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { verify, JwtPayload } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
@@ -9,7 +10,7 @@ import { COOKIE_NAME } from '@/constants';
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
- const {email, password} = body;
+ const { email, password } = body;
 
   const cookieStore = cookies();
 

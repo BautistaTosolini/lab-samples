@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
@@ -84,7 +85,10 @@ export async function PUT(request: NextRequest) {
 
     connectToDB();
 
-    await User.findByIdAndUpdate(userId, { password });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await User.findByIdAndUpdate(userId, { password: hashedPassword });
 
     return NextResponse.json({ message: 'Contraseña reestablecida' }, { status: 200 });
 

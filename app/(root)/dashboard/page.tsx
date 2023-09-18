@@ -64,7 +64,6 @@ const Page = () => {
           .then((response) => {
             const searchedSamples = response.data.samples;
             const hasMore = response.data.hasMore;
-            console.log(response.data)
 
             setPage(newPage + 1);
             setHasMore(hasMore);
