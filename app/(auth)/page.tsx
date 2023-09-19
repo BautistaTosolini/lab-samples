@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import axios from 'axios'
 import { useState } from 'react';
 
@@ -52,7 +52,6 @@ const Page = () => {
 
   return (
     <Card className='w-[350px]'>
-      <Toaster />
       <CardHeader>
         <CardTitle>Iniciar sesión</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>

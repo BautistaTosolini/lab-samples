@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -117,7 +117,6 @@ const Page = ({ params }: { params: { id: string } }) => {
       </TabsList>
       <Card>
         <CardContent>
-          <Toaster />
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,7 +87,6 @@ const Page = () => {
     <>
       <div className='justify-center items-center mt-16'>
         <Card className='w-[350px] sm:w-[450px]'>
-          <Toaster />
           <CardHeader>
             <CardTitle>Configuración de Cuenta</CardTitle>
           </CardHeader>

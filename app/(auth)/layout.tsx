@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import type { Metadata } from "next";
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: 'Muestras de Laboratorio',
@@ -13,6 +14,7 @@ export default function RootLayout ({ children }: { children: React.ReactNode })
     <html lang='en'>
       <body className={`${inter.className}`}>
         <div className='w-full flex justify-center items-center min-h-screen bg-gray-300'>
+          <Toaster />
           {children}
         </div>
       </body>

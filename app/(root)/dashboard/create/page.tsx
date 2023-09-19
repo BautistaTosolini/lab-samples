@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 
 import SampleForm from '@/components/form/SampleForm';
@@ -43,7 +42,6 @@ const Page = () => {
 
   return (
     <div className='m-4 mt-16'>
-      <Toaster />
       <div>
         <SampleForm 
           userInfo={userInfo}

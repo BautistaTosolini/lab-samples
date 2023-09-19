@@ -7,6 +7,7 @@ import axios from 'axios';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Navbar from '@/components/shared/Navbar';
 import { UserInterface } from '@/lib/interfaces/models.interface';
+import { Toaster } from 'react-hot-toast';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -44,6 +45,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <Navbar 
         user={user!}
       />
+      <Toaster />
       {children}
     </main>
   )

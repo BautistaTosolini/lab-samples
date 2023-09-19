@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
@@ -58,7 +58,6 @@ const Page = ({ params }: { params: { token: string } }) => {
 
   return (
     <Card className='w-[350px]'>
-    <Toaster />
     <CardHeader>
       <CardTitle>Reestablecer Contraseña</CardTitle>
       <CardDescription>Muestras de Laboratorio</CardDescription>

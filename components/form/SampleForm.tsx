@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -104,7 +104,6 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
 
   return (
     <Card>
-      <Toaster />
       <CardHeader>
         <CardTitle>Agregar Muestra</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>

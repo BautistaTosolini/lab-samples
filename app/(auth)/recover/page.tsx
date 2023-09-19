@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import axios from 'axios'
 import { useState } from 'react';
 
@@ -31,7 +31,6 @@ const Page = () => {
 
   return (
     <Card className='w-[350px]'>
-      <Toaster />
       <CardHeader>
         <CardTitle>Recuperar Cuenta</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>

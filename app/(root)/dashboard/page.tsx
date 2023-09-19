@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import SampleCard from '@/components/cards/SampleCard';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import TableHeader from '@/components/shared/TableHeader';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Label } from '@/components/ui/label';
@@ -153,7 +153,6 @@ const Page = () => {
 
   return (
     <>
-      <Toaster />
 
       <div className='flex flex-col gap-4 m-4 mt-16'>
         <div className='flex flex-row justify-between items-center gap-2 px-10'>
