@@ -62,13 +62,19 @@ NODEMAILER_PASSWORD=
 # This is the email through which all emails will be sent; it must be the same one with which the password was generated
 MAILER=
 
+# OPTIONALS: In case you want to modify the mail message when recovering the password or when a sample is created. It must be plain html.
+RECOVER_PASSWORD_MAIL=
+CREATE_SAMPLE_MAIL=
+
 # Run the project
 $ npm run dev
 
 # The server will initialize in the <http://localhost:3000>
 ```
 
-Made with :heart: by <a href="https://github.com/BautistaTosolini" target="_blank">BautistaTosolini</a>
+<br>
+
+<p align="center">Made with :heart: by <a href="https://github.com/BautistaTosolini" target="_blank">BautistaTosolini</a></p>
 
 &#xa0;
 

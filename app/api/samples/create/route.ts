@@ -59,24 +59,24 @@ export async function POST(request: Request) {
     })
     
     const mailer = process.env.MAILER;
+    const createSampleMail = process.env.CREATE_SAMPLE_MAIL || `<div>
+      <h1>
+        Muestras de Laboratorio
+      </h1>
+      <p>
+        Su muestra ${sampleType} ha sido cargada correctamente.
+      </p>
+      <p>
+        Código de Muestra: ${code}
+      </p>
+    </div>
+  `;
 
     await transporter.sendMail({
       from: `"Muestra Agregada" <${mailer}>`,
       to: updatedResearcher.email,
       subject: 'Muestra agregada',
-      html: `
-        <div>
-          <h1>
-            Muestras de Laboratorio
-          </h1>
-          <p>
-            Su muestra ${sampleType} ha sido cargada correctamente.
-          </p>
-          <p>
-            Código de Muestra: ${code}
-          </p>
-        </div>
-      `
+      html: createSampleMail,
     })
 
     return NextResponse.json({ message: 'Muestra creada' }, { status: 200 })

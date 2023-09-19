@@ -35,24 +35,25 @@ export async function POST(request: NextRequest) {
 
     const mailer = process.env.MAILER;
     const url = process.env.BASE_URL;
+    const recoverPasswordMail = process.env.RECOVER_PASSWORD_MAIL || `<div>
+    <h1>
+      Muestras de Laboratorio
+    </h1>
+    <p>
+      Se ha solicitado un reestablecimiento de contraseña, haga <a href=${url}/recover/${token}>click aquí</a> para continuar.
+    </p>
+    <p>
+      Si usted no solicitó este email, ignore las instrucciones.
+    </p>
+  </div>` 
+
+  console.log(recoverPasswordMail)
 
     await transporter.sendMail({
       from: `"Recuperación de Cuenta" <${mailer}>`,
       to: user.email,
       subject: 'Recuperación de Cuenta',
-      html: `
-        <div>
-          <h1>
-            Muestras de Laboratorio
-          </h1>
-          <p>
-            Se ha solicitado un reestablecimiento de contraseña, haga <a href=${url}/recover/${token}>click aquí</a> para continuar.
-          </p>
-          <p>
-            Si usted no solicitó este email, ignore las instrucciones y cambie su contraseña.
-          </p>
-        </div>
-      `
+      html: recoverPasswordMail,
     })
 
     return NextResponse.json({ message: 'El link de recuperación ha sido enviado' }, { status: 200 });
