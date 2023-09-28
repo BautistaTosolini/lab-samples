@@ -47,8 +47,6 @@ export async function POST(request: NextRequest) {
     </p>
   </div>` 
 
-  console.log(recoverPasswordMail)
-
     await transporter.sendMail({
       from: `"Recuperación de Cuenta" <${mailer}>`,
       to: user.email,

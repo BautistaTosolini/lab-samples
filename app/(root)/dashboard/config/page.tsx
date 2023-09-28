@@ -49,7 +49,7 @@ const Page = () => {
   const onSubmit = async () => {
     setSubmiting(true);
 
-    await axios.post('/api/users/update', { email, password })
+    await axios.put('/api/users', { email, password })
       .then((response) => {
         const user = response.data.user;
 

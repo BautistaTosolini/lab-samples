@@ -6,6 +6,7 @@ export const SampleSchema = z.object({
 })
 
 export const UpdateSampleSchema = z.object({
+  observations: z.string().optional(),
   inclusion: z.boolean(),
   semithin: z.boolean(),
   thin: z.boolean(),

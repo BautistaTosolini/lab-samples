@@ -7,13 +7,14 @@ import InformationCard from '@/components/cards/InformationCard';
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import formatDateTime from '@/lib/utils/formatDateTime';
+import { Textarea } from '@/components/ui/textarea';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { CheckSquare, Square } from 'lucide-react';
 
 interface SampleDetailsCardProps {
   sample: Samples;
-  form: UseFormReturn<{ inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; }, any, undefined>;
+  form: UseFormReturn<{ observations: string; inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; }, any, undefined>;
   user: UserInterface;
 }
 
@@ -40,12 +41,36 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
         <InformationCard>
           {sample.sampleType}
         </InformationCard>
-        <Label>
-          Observaciones:
-        </Label>
-        <div className='min-h-[40px] flex w-full rounded-md border bg-gray-200 px-3 py-2 text-sm my-2'>
-          {sample.observations ? sample.observations : 'Sin observaciones.'}
-        </div>
+        {user.role !== 'researcher' ?
+          <>
+            <FormField
+              control={form.control}
+              name='observations'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Observaciones (Opcional)</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      className='bg-gray-200 row-5'
+                      placeholder='Observaciones...' 
+                      {...field} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </>
+        : 
+          <>
+            <Label>
+              Observaciones:
+            </Label>
+            <div className='min-h-[40px] flex w-full rounded-md border bg-gray-200 px-3 py-2 text-sm my-2'>
+              {sample.observations ? sample.observations : 'Sin observaciones.'}
+            </div>
+          </>
+        }
+        
         <Label>
           Fecha de Creación:
         </Label>

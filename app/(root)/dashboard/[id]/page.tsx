@@ -31,9 +31,10 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   const onSubmit = async (data: z.infer<typeof UpdateSampleSchema>) => {
     setSubmiting(true);
-    const { inclusion, semithin, thin, grid } = data;
+    const { observations, inclusion, semithin, thin, grid } = data;
 
     const payload = {
+      observations,
       inclusion,
       semithin,
       thin,
@@ -41,7 +42,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       sampleId: params.id,
     }
 
-    await axios.post(`/api/samples/update`, payload)
+    await axios.put(`/api/samples`, payload)
       .then((response) => {
         toast.success(response.data.message);
 
@@ -58,6 +59,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   const form = useForm({
     resolver: zodResolver(UpdateSampleSchema),
     defaultValues: {
+      observations: sample ? sample.observations : '',
       inclusion: sample ? sample.inclusion : false,
       semithin: sample ? sample.semithin : false,
       thin: sample ? sample.thin : false,
@@ -70,14 +72,18 @@ const Page = ({ params }: { params: { id: string } }) => {
     const fetchSampleData = async () => {
       await axios.get(`/api/samples/${params.id}`)
         .then((response) => {
-          setSample(response.data.sample);
-          setResearcher(response.data.sample.researcher);
+          const sample = response.data.sample;
+          const researcher = response.data.user;
+
+          setSample(sample);
+          setResearcher(researcher);
           setIsLoading(false);
           form.reset({
-            inclusion: response.data.sample.inclusion,
-            semithin: response.data.sample.semithin,
-            thin: response.data.sample.thin,
-            grid: response.data.sample.grid,
+            observations: sample.observations,
+            inclusion: sample.inclusion,
+            semithin: sample.semithin,
+            thin: sample.thin,
+            grid: sample.grid,
           });
         })
         .catch((error) => {
