@@ -38,7 +38,7 @@ const Page = () => {
       const newPage = 1;
 
       if (searchParam.length === 0 && isMounted) {
-        await axios.post(`/api/samples`, { currentPage: newPage })
+        await axios.get(`/api/samples?page=${newPage}`)
           .then((response) => {
             const user = response.data.user;
             const samples = response.data.user.samples;
@@ -60,7 +60,7 @@ const Page = () => {
       }
 
       if (searchParam.length > 0 && isMounted) {
-        await axios.post(`/api/samples/search`, { searchParam, currentPage: newPage })
+        await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${newPage}`)
           .then((response) => {
             const searchedSamples = response.data.samples;
             const hasMore = response.data.hasMore;
@@ -83,7 +83,7 @@ const Page = () => {
   //get user data and samples
   useEffect(() => {
     (async () => {
-      await axios.post(`/api/samples`, { currentPage: page })
+      await axios.get(`/api/samples?page=${page}`)
         .then((response) => {
           const user = response.data.user;
           const samples = response.data.user.samples;
@@ -110,7 +110,7 @@ const Page = () => {
     if (searchParam.length === 0) {
       setPage(page + 1);
 
-      await axios.post(`/api/samples`, { currentPage: page })
+      await axios.get(`/api/samples?page=${page}`)
         .then((response) => {
           const newSamples = response.data.user.samples;
           const hasMore = response.data.hasMore;
@@ -125,7 +125,7 @@ const Page = () => {
 
     } else {
       
-      await axios.post(`/api/samples`, { searchParam, currentPage: page })
+      await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${page}`)
         .then((response) => {
           const user = response.data.user;
           const hasMore = response.data.hasMore;

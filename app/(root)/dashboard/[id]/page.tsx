@@ -29,6 +29,21 @@ const Page = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [submiting, setSubmiting] = useState(false);
 
+  const deleteSample = async () => {
+    setSubmiting(true);
+    const sampleId = params.id;
+
+    await axios.delete(`/api/samples/${sampleId}`)
+      .then((response) => {
+        toast.success(response.data.message);
+        router.push('/dashboard');
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || 'Ocurrió un error');
+        setSubmiting(false);
+      })
+  }
+
   const onSubmit = async (data: z.infer<typeof UpdateSampleSchema>) => {
     setSubmiting(true);
     const { observations, inclusion, semithin, thin, grid } = data;
@@ -142,6 +157,18 @@ const Page = ({ params }: { params: { id: string } }) => {
               </TabsContent>
 
               <div className='flex w-full justify-center gap-4 mt-4'>
+                {userInfo.role === 'admin' ?
+                  <Button
+                    variant='destructive'
+                    className='w-full'
+                    type='button'
+                    onClick={deleteSample}
+                  >
+                    {submiting ? 'Cargando...' : 'Borrar'}
+                  </Button>
+                : 
+                  null
+                }
                 <Button 
                   className='w-full'
                   type='button'

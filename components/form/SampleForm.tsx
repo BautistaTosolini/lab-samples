@@ -72,7 +72,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
       observations,
     }
 
-    await axios.post(`/api/samples/create`, payload)
+    await axios.post(`/api/samples`, payload)
       .then(() => {
         toast.success('Muestra creada');
 

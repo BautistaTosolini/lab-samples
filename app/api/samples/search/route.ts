@@ -7,11 +7,16 @@ import User from '@/lib/models/user.model';
 import { COOKIE_NAME, PER_PAGE } from '@/constants';
 import Sample from '@/lib/models/sample.model';
 
-export async function POST(request: Request) {
-  const body = await request.json();
-
-  const { searchParam, currentPage } = body;
+export async function GET(request: Request) {
+  const url = new URL(request.url!);
+  
+  const page = url.searchParams.get('page');
+  const searchParam = url.searchParams.get('searchParam');
   const perPage = PER_PAGE;
+
+  if (!page || !searchParam) {
+    return NextResponse.json({ message: 'Parámetro inválido' }, { status: 400 });
+  }
 
   const cookieStore = cookies();
 
@@ -30,8 +35,8 @@ export async function POST(request: Request) {
     
     connectToDB();
     
-    const skipAmount = (currentPage - 1) * perPage;
-    const samplesRequested = currentPage * perPage;
+    const skipAmount = (parseInt(page) - 1) * perPage;
+    const samplesRequested = parseInt(page) * perPage;
 
     const user = await User
       .findById(userId)
@@ -123,7 +128,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ samples: samples, hasMore: true, samplesLength: totalSamplesCount }, { status: 200 });
 
   } catch (error: any) {
-    console.log('POST - /api/samples/search:', error.message)
+    console.log('GET - /api/samples/search:', error.message)
     return NextResponse.json({ message: 'Algo salió mal' }, { status: 500 });
   }
 };

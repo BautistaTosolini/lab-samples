@@ -69,6 +69,9 @@ export async function POST(request: Request) {
       <p>
         Código de Muestra: ${code}
       </p>
+      <p>
+        Observaciones: ${observations}
+      </p>
     </div>
   `;
 
