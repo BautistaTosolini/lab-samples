@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { Form } from '@/components/ui/form';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 const Page = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -158,14 +159,31 @@ const Page = ({ params }: { params: { id: string } }) => {
 
               <div className='flex w-full justify-center gap-4 mt-4'>
                 {userInfo.role === 'admin' ?
-                  <Button
-                    variant='destructive'
-                    className='w-full'
-                    type='button'
-                    onClick={deleteSample}
-                  >
-                    {submiting ? 'Cargando...' : 'Borrar'}
-                  </Button>
+                <>
+                  <AlertDialog>
+                    <AlertDialogTrigger className='w-full'>
+                      <Button
+                        variant='destructive'
+                        className='w-full'
+                        type='button'
+                      >
+                        {submiting ? 'Cargando...' : 'Borrar'}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>¿Estas seguro?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta acción no se puede deshacer.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={deleteSample}>Continue</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </>
                 : 
                   null
                 }
