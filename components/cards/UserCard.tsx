@@ -5,19 +5,19 @@ import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
-import axios from 'axios';
 import { ChevronsUpDown } from 'lucide-react';
 
 import { UserInterface } from '@/lib/interfaces/models.interface';
-import toast from 'react-hot-toast';
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogAction } from '../ui/alert-dialog';
 
 interface UserCardProps {
   user: UserInterface;
   onClick: (userId: string, value: string) => void;
   submiting: boolean;
+  deleteUser: (id: string) => void;
 }
 
-const UserCard = ({ user, onClick, submiting }: UserCardProps) => {
+const UserCard = ({ user, onClick, submiting, deleteUser }: UserCardProps) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(user.role);
 
@@ -82,6 +82,30 @@ const UserCard = ({ user, onClick, submiting }: UserCardProps) => {
               </PopoverContent>
             </Popover>
           </span>
+
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button
+                variant='destructive'
+                className={`${submiting ? 'cursor-progress' : ''}`}
+                type='button'
+                >
+                Borrar
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Estas seguro?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta acción eliminará al usuario y todas sus muestras asociadas, esta acción no se puede revertir.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={() => deleteUser(user._id)}>Continuar</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
         </div>
       </div>

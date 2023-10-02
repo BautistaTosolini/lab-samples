@@ -50,7 +50,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 };
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const sampleId = params.id
 
   const cookieStore = cookies();
@@ -74,7 +74,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       .findById(userId)
       .select('-password');
 
-    if (user.role !== 'admin') {
+    if (!user || user.role !== 'admin') {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 

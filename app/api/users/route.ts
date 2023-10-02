@@ -5,6 +5,7 @@ import { verify, JwtPayload } from 'jsonwebtoken';
 import { connectToDB } from '@/lib/utils/mongoose';
 import User from '@/lib/models/user.model';
 import { COOKIE_NAME } from '@/constants';
+import Sample from '@/lib/models/sample.model';
 
 export async function GET() {
   const cookieStore = cookies();
@@ -47,7 +48,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   const body = await request.json();
 
- const { email, password } = body;
+  const { email, password } = body;
 
   const cookieStore = cookies();
 

@@ -31,7 +31,7 @@ const Page = () => {
     }
 
     fetchAllUsers();
-  }, [])
+  }, [router])
 
   const onClick = async (userId: string, value: string) => {
     setSubmiting(true);
@@ -56,9 +56,20 @@ const Page = () => {
       })
   }
 
-if (!users) {
-  return <LoadingSpinner />
-}
+  if (!users) {
+    return <LoadingSpinner />
+  }
+  
+  const deleteUser = async (id: string) => {
+    await axios.delete(`/api/users/${id}`)
+      .then((response) => {
+        toast.success(response.data.message);
+        setUsers(users.filter((user) => user._id !== id))
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message)
+      })
+  }
 
   return (
     <div className='mt-16 flex flex-col'>
@@ -68,9 +79,10 @@ if (!users) {
           return (
             <UserCard 
               user={user}
-              key={user._id}
               onClick={onClick}
+              key={user._id}
               submiting={submiting}
+              deleteUser={deleteUser}
             />
           )
         })}

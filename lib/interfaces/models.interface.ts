@@ -22,6 +22,7 @@ export interface UserInterface {
   samples: Samples[];
   _id: string;
   createdAt: string;
+  samplesCount: number;
 }
 
 export interface CustomError {

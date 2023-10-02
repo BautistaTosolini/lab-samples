@@ -164,10 +164,10 @@ const Page = ({ params }: { params: { id: string } }) => {
                     <AlertDialogTrigger className='w-full'>
                       <Button
                         variant='destructive'
-                        className='w-full'
+                        className={`w-full ${submiting ? 'cursor-progress' : ''}`}
                         type='button'
-                      >
-                        {submiting ? 'Cargando...' : 'Borrar'}
+                        >
+                        Borrar
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
