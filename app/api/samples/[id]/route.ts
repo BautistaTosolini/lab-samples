@@ -78,6 +78,15 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
+    const researcher = await User.findOne({ samples: sampleId });
+
+    if (!researcher) {
+      return NextResponse.json({ message: 'No se encontró el investigador con esa muestra' }, { status: 404 });
+    }
+
+    researcher.samples = researcher.samples.filter((id: number) => id.toString() !== sampleId);
+    await researcher.save();
+
     await Sample.findByIdAndDelete(sampleId);
 
     return NextResponse.json({ message: 'Muestra eliminada' }, { status: 200 });

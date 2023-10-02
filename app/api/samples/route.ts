@@ -218,7 +218,8 @@ export async function POST(request: Request) {
     })
 
     const updatedResearcher = await User.findByIdAndUpdate(researcher, {
-      $push: { samples: sample._id }
+      $inc: { samplesCount: 1 },
+      $push: { samples: sample._id },
     })
     
     const mailer = process.env.MAILER;

@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
       ref: 'Sample',
     }
   ],
+  samplesCount: {
+    type: Number,
+    default: 0,
+  },
   recoveryToken: {
     type: String,
   }

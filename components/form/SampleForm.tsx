@@ -55,7 +55,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
     const last = researcher?.lastname[0].toUpperCase();
 
     if (first && last) {
-      const result = first + last + '-' + researcher.samples.length;
+      const result = first + last + '-' + researcher.samplesCount;
 
       setCode(result);
     } 
