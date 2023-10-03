@@ -124,7 +124,12 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                     aria-expanded={open}
                     className='w-full justify-between bg-gray-200'
                   >
-                    {value ? researchers.find((researcher) => researcher.email === value)?.email : 'Seleccione un investigador...'}
+                    {
+                      value ? 
+                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === value)?.name + ' ' + 
+                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === value)?.lastname : 
+                      'Seleccione un investigador...'
+                    }
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                   </Button>
                 </PopoverTrigger>
@@ -138,7 +143,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                           key={researcher._id}
                           onSelect={(currentValue) => {
                             setValue(currentValue)
-                            const auxiliarSelectedResearcher = researchers.find((researcher) => researcher.email === currentValue);
+                            const auxiliarSelectedResearcher = researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === currentValue);
                             selectResearcher(auxiliarSelectedResearcher!);
                             setOpen(false)
                           }}
@@ -149,7 +154,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                               value === researcher._id ? 'opacity-100' : 'opacity-0'
                             )}
                           />
-                          {researcher.email}
+                          {researcher.name} {researcher.lastname}
                         </CommandItem>
                       ))}
                     </CommandGroup>
