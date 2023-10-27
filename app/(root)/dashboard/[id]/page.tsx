@@ -47,7 +47,14 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   const onSubmit = async (data: z.infer<typeof UpdateSampleSchema>) => {
     setSubmiting(true);
-    const { observations, inclusion, semithin, thin, grid } = data;
+    const { 
+      observations, 
+      inclusion, 
+      semithin, 
+      thin, 
+      grid, 
+      finished 
+    } = data;
 
     const payload = {
       observations,
@@ -56,6 +63,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       thin,
       grid,
       sampleId: params.id,
+      finished,
     }
 
     await axios.put(`/api/samples`, payload)
@@ -80,6 +88,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       semithin: sample ? sample.semithin : false,
       thin: sample ? sample.thin : false,
       grid: sample ? sample.grid : false,
+      finished: sample ? sample.finished : false,
     },
   });
 
@@ -100,6 +109,7 @@ const Page = ({ params }: { params: { id: string } }) => {
             semithin: sample.semithin,
             thin: sample.thin,
             grid: sample.grid,
+            finished: sample.finished,
           });
         })
         .catch((error) => {

@@ -11,4 +11,5 @@ export const UpdateSampleSchema = z.object({
   semithin: z.boolean(),
   thin: z.boolean(),
   grid: z.boolean(),
+  finished: z.boolean(),
 })

@@ -33,6 +33,10 @@ const sampleModel = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  finished: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true
 });

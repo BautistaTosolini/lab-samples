@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { UseFormReturn } from 'react-hook-form';
 
 import { CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,14 +13,16 @@ import { CheckSquare, Square } from 'lucide-react';
 
 interface SampleDetailsCardProps {
   sample: Samples;
-  form: UseFormReturn<{ observations: string; inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; }, any, undefined>;
+  form: UseFormReturn<{ observations: string; inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; finished: boolean; }, any, undefined>;
   user: UserInterface;
 }
 
 const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
-  const router = useRouter();
   const createdAtDate = new Date(sample.createdAt)
   const updatedAtDate = new Date(sample.updatedAt)
+
+  console.log(sample)
+  console.log(form)
 
   return (
     <>
@@ -149,6 +150,22 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name='finished'
+              render={({ field }) => (
+                <FormItem className='flex justify-between m-2'>
+                  <FormLabel>Finalizado</FormLabel>
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </>
         :
           <div className='flex flex-col gap-2 font-semibold'>
@@ -167,6 +184,10 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
             <div className='flex justify-between'>
               Grilla:
               {sample.grid ? <CheckSquare /> : <Square />}
+            </div>
+            <div className='flex justify-between'>
+              Finalizado:
+              {sample.finished ? <CheckSquare /> : <Square />}
             </div>
           </div>
         } 

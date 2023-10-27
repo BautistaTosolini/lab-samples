@@ -106,7 +106,15 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   const body = await request.json();
   
-  const { observations, inclusion, thin, semithin, grid, sampleId } = body;
+  const { 
+    observations, 
+    inclusion, 
+    thin, 
+    semithin, 
+    grid, 
+    sampleId, 
+    finished 
+  } = body;
 
   const cookieStore = cookies();
 
@@ -136,7 +144,8 @@ export async function PUT(request: Request) {
       inclusion,
       thin,
       semithin,
-      grid
+      grid,
+      finished,
     })
 
     const sample = await Sample.findById(sampleId)
@@ -146,6 +155,31 @@ export async function PUT(request: Request) {
       });
 
     const mailer = process.env.MAILER;
+
+    if (finished) {
+      await transporter.sendMail({
+        from: `"Muestra actualizada" <${mailer}>`,
+        to: sample.researcher.email,
+        subject: 'Muestra finalizada',
+        html: `
+          <div>
+            <h1>
+              Muestras de Laboratorio
+            </h1>
+            <p>
+              Su muestra ${sample.sampleType} ha sido finalizada. 
+            </p>
+            <p>
+              Código de Muestra: ${sample.code}
+            </p>
+            <p>
+              Observaciones: ${observations}
+            </p>
+          </div>
+        `
+
+      })
+    }
 
     await transporter.sendMail({
       from: `"Muestra actualizada" <${mailer}>`,
@@ -158,6 +192,12 @@ export async function PUT(request: Request) {
           </h1>
           <p>
             Su muestra ${sample.sampleType} ha sido actualizada.
+          </p>
+          <p>
+            Código de Muestra: ${sample.code}
+          </p>
+          <p>
+            Observaciones: ${observations}
           </p>
         </div>
       `
@@ -186,14 +226,12 @@ export async function POST(request: Request) {
 
   const secret = process.env.JWT_SECRET || '';
 
-  const { researcher,
+  const { 
+    researcher,
     code,
     sampleType,
     observations,
-    inclusion,
-    semithin,
-    thin,
-    grid, } = body;
+   } = body;
 
   try {
     const { userId } = verify(value, secret) as JwtPayload;
@@ -211,10 +249,6 @@ export async function POST(request: Request) {
       code,
       sampleType,
       observations,
-      inclusion,
-      semithin,
-      thin,
-      grid,
     })
 
     const updatedResearcher = await User.findByIdAndUpdate(researcher, {

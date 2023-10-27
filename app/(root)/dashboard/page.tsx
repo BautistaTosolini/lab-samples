@@ -209,6 +209,7 @@ const Page = () => {
                     semithin={sample.semithin}
                     thin={sample.thin}
                     grid={sample.grid}
+                    finished={sample.finished}
                     _id={sample._id}
                   />
                 )

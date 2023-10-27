@@ -9,6 +9,7 @@ export interface Samples {
   semithin: boolean,
   thin: boolean,
   grid: boolean,
+  finished: boolean,
   _id: string;
   createdAt: string;
   updatedAt: string;
