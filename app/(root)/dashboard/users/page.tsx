@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -10,9 +10,11 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { UserInterface } from '@/lib/interfaces/models.interface';
 import UserCard from '@/components/cards/UserCard';
 import toast from 'react-hot-toast';
+import { UserContext } from '../../layout';
 
 const Page = () => {
   const router = useRouter();
+  const user = useContext(UserContext);
 
   const [users, setUsers] = useState<UserInterface[] | null>(null);
   const [submiting, setSubmiting] = useState(false);
@@ -32,6 +34,11 @@ const Page = () => {
 
     fetchAllUsers();
   }, [router])
+
+  if (!user || user.role !== 'admin') {
+    router.push('/dashboard');
+    return null;
+  }
 
   const onClick = async (userId: string, value: string) => {
     setSubmiting(true);

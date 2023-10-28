@@ -113,7 +113,8 @@ const Page = ({ params }: { params: { id: string } }) => {
           });
         })
         .catch((error) => {
-          toast.error(error.response.data.message);
+          toast.error('Muestra no encontrada');
+          router.push('/dashboard');
         });
     }
 

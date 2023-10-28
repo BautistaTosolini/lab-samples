@@ -1,13 +1,15 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
 
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Navbar from '@/components/shared/Navbar';
 import { UserInterface } from '@/lib/interfaces/models.interface';
 import { Toaster } from 'react-hot-toast';
+
+export const UserContext = createContext<UserInterface | null>(null);
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -22,31 +24,35 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
           setUser(user);
 
-          if (user) {
-            setIsAuthenticated(true);
-          } else {
-            router.push(`/`);
+          if (!user) {
+            router.push('/');
+            return null;
           }
+
+          setIsAuthenticated(true);
         })
         .catch((error) => {
-          router.push(`/`)
+          router.push(`/`);
+          return null;
         })
     }
 
     authenticateUser();
   }, [router])
 
-  if (!isAuthenticated && !user) {
+  if (!isAuthenticated || !user) {
     return <LoadingSpinner />
   }
 
   return (
     <main className='w-full flex justify-center min-h-screen bg-gray-300'>
-      <Navbar 
-        user={user!}
-      />
-      <Toaster />
-      {children}
+      <UserContext.Provider value={user}>
+        <Navbar 
+          user={user!}
+        />
+        <Toaster />
+        {children}
+      </UserContext.Provider>
     </main>
   )
 };
