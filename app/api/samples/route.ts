@@ -155,6 +155,7 @@ export async function PUT(request: Request) {
       });
 
     const mailer = process.env.MAILER;
+    const url = process.env.BASE_URL;
 
     if (finished) {
       await transporter.sendMail({
@@ -167,7 +168,7 @@ export async function PUT(request: Request) {
               Muestras de Laboratorio
             </h1>
             <p>
-              Su muestra ${sample.sampleType} ha sido finalizada. 
+              Su <a href=${url}/dashboard/${sample._id}>muestra ${sample.sampleType}</a> ha sido finalizada. 
             </p>
             <p>
               Código de Muestra: ${sample.code}
@@ -179,29 +180,29 @@ export async function PUT(request: Request) {
         `
 
       })
+    } else {
+      await transporter.sendMail({
+        from: `"Muestra actualizada" <${mailer}>`,
+        to: sample.researcher.email,
+        subject: 'Muestra actualizada',
+        html: `
+          <div>
+            <h1>
+              Muestras de Laboratorio
+            </h1>
+            <p>
+              Su <a href=${url}/dashboard/${sample._id}>muestra ${sample.sampleType}</a> ha sido actualizada.
+            </p>
+            <p>
+              Código de Muestra: ${sample.code}
+            </p>
+            <p>
+              Observaciones: ${observations}
+            </p>
+          </div>
+        `
+      })
     }
-
-    await transporter.sendMail({
-      from: `"Muestra actualizada" <${mailer}>`,
-      to: sample.researcher.email,
-      subject: 'Muestra actualizada',
-      html: `
-        <div>
-          <h1>
-            Muestras de Laboratorio
-          </h1>
-          <p>
-            Su muestra ${sample.sampleType} ha sido actualizada.
-          </p>
-          <p>
-            Código de Muestra: ${sample.code}
-          </p>
-          <p>
-            Observaciones: ${observations}
-          </p>
-        </div>
-      `
-    })
 
     return NextResponse.json({ message: 'Muestra actualizada' }, { status: 200 });
 
@@ -257,12 +258,13 @@ export async function POST(request: Request) {
     })
     
     const mailer = process.env.MAILER;
+    const url = process.env.BASE_URL;
     const createSampleMail = process.env.CREATE_SAMPLE_MAIL || `<div>
       <h1>
         Muestras de Laboratorio
       </h1>
       <p>
-        Su muestra ${sampleType} ha sido cargada correctamente.
+        Su <a href=${url}/dashboard/${sample._id}>muestra ${sample.sampleType}</a> ha sido cargada correctamente.
       </p>
       <p>
         Código de Muestra: ${code}
