@@ -13,15 +13,16 @@ interface SampleCardProps {
   grid: boolean;
   finished: boolean;
   _id: string;
+  print?: boolean;
 }
 
-const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid, _id, finished }: SampleCardProps) => {
+const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid, _id, finished, print = false }: SampleCardProps) => {
   const router = useRouter();
   const finalDate = new Date(date);
 
   return (
     <div 
-      className={`flex gap-2 rounded-lg p-4 border border-gray-300 hover:bg-gray-400 cursor-pointer mb-2 ${finished ? 'bg-gray-400' : 'bg-white'}`}
+      className={`flex gap-2 rounded-lg p-4 border border-gray-300 hover:bg-gray-400 cursor-pointer mb-2 ${finished ? 'bg-gray-400' : 'bg-white'} ${print && 'text-sm'}`}
       onClick={() => router.push(`/dashboard/${_id}`)}
     >
       <div className='flex gap-4 text-center'>

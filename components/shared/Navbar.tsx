@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Home, LogOut, Menu, Plus, Settings, Users } from 'lucide-react';
+import { File, Home, LogOut, Menu, Plus, Settings, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -75,13 +75,23 @@ const Navbar = ({ user }: { user: UserInterface }) => {
             </DropdownMenuItem>
 
             {user.role !== 'researcher' ?
-              <DropdownMenuItem 
-              className='cursor-pointer hover:bg-gray-300'
-              onClick={() => router.push('/dashboard/create')}
-              >
-                <Plus className='mr-2 h-4 w-4' />
-                <span>Agregar Muestra</span>
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem 
+                className='cursor-pointer hover:bg-gray-300'
+                onClick={() => router.push('/dashboard/print')}
+                >
+                  <File className='mr-2 h-4 w-4' />
+                  <span>Imprimir Muestras</span>
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem 
+                className='cursor-pointer hover:bg-gray-300'
+                onClick={() => router.push('/dashboard/create')}
+                >
+                  <Plus className='mr-2 h-4 w-4' />
+                  <span>Agregar Muestra</span>
+                </DropdownMenuItem>
+              </>
             : null}
 
             <DropdownMenuSeparator />

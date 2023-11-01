@@ -64,7 +64,7 @@ export async function GET(request: Request) {
 
       user.samples = samples;
 
-      if (user.samples.length < samplesRequested) {
+      if (totalSamplesCount < samplesRequested) {
         return NextResponse.json({ user: user, hasMore: false, samplesLength: totalSamplesCount }, { status: 200 });
       }
   
@@ -91,7 +91,7 @@ export async function GET(request: Request) {
 
       user.samples = samples;
 
-    if (user.samples.length < samplesRequested) {
+    if (totalSamplesCount < samplesRequested) {
       return NextResponse.json({ user: user, hasMore: false, samplesLength: totalSamplesCount }, { status: 200 });
     }
 
@@ -250,7 +250,7 @@ export async function POST(request: Request) {
       sampleType,
       observations,
     })
-
+    
     const updatedResearcher = await User.findByIdAndUpdate(researcher, {
       $inc: { samplesCount: 1 },
       $push: { samples: sample._id },

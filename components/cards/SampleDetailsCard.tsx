@@ -21,9 +21,6 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
   const createdAtDate = new Date(sample.createdAt)
   const updatedAtDate = new Date(sample.updatedAt)
 
-  console.log(sample)
-  console.log(form)
-
   return (
     <>
       <CardHeader className='w-full'>
