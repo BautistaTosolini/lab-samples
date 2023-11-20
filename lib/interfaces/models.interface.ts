@@ -18,6 +18,7 @@ export interface Samples {
 export interface UserInterface {
   email: string;
   name: string;
+  id: string;
   lastname: string;
   role: 'researcher' | 'secretary' | 'admin';
   samples: Samples[];

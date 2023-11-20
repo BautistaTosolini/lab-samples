@@ -53,9 +53,10 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
 
     const first = researcher?.name[0].toUpperCase();
     const last = researcher?.lastname[0].toUpperCase();
+    const id = researcher?.id;
 
     if (first && last) {
-      const result = first + last + '-' + researcher.samplesCount;
+      const result = first + last + id.toString().slice(-3) + '-' + researcher.samplesCount;
 
       setCode(result);
     } 
@@ -126,8 +127,9 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                   >
                     {
                       value ? 
-                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === value)?.name + ' ' + 
-                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === value)?.lastname : 
+                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()} - ${researcher.id}` === value)?.name + ' ' + 
+                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()} - ${researcher.id}` === value)?.lastname + ' - ' +
+                      researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()} - ${researcher.id}` === value)?.id : 
                       'Seleccione un investigador...'
                     }
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
@@ -143,7 +145,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                           key={researcher._id}
                           onSelect={(currentValue) => {
                             setValue(currentValue)
-                            const auxiliarSelectedResearcher = researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()}` === currentValue);
+                            const auxiliarSelectedResearcher = researchers.find((researcher) => `${researcher.name.toLowerCase()} ${researcher.lastname.toLowerCase()} - ${researcher.id}` === currentValue);
                             selectResearcher(auxiliarSelectedResearcher!);
                             setOpen(false)
                           }}
@@ -154,7 +156,7 @@ const SampleForm = ({ onClick, userInfo }: SampleFormProps) => {
                               value === researcher._id ? 'opacity-100' : 'opacity-0'
                             )}
                           />
-                          {researcher.name} {researcher.lastname}
+                          {`${researcher.name} ${researcher.lastname} - ${researcher.id}`}
                         </CommandItem>
                       ))}
                     </CommandGroup>

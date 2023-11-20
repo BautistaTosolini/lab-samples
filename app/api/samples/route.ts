@@ -139,20 +139,24 @@ export async function PUT(request: Request) {
       return NextResponse.json({ message: 'No autorizado' }, { status: 401 });
     }
 
-    await Sample.findByIdAndUpdate(sampleId, {
-      observations,
-      inclusion,
-      thin,
-      semithin,
-      grid,
-      finished,
-    })
-
     const sample = await Sample.findById(sampleId)
       .populate({
         path: 'researcher',
         model: User,
       });
+
+    let observationsUpdated = false;
+
+    if (sample.observations !== observations) observationsUpdated = true;
+
+    sample.observations = observations;
+    sample.inclusion = inclusion;
+    sample.thin = thin;
+    sample.semithin = semithin;
+    sample.grid = grid;
+    sample.finished = finished;
+
+    await sample.save();
 
     const mailer = process.env.MAILER;
     const url = process.env.BASE_URL;
@@ -180,7 +184,7 @@ export async function PUT(request: Request) {
         `
 
       })
-    } else {
+    } else if (observationsUpdated) {
       await transporter.sendMail({
         from: `"Muestra actualizada" <${mailer}>`,
         to: sample.researcher.email,

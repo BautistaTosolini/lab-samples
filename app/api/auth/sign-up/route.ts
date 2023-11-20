@@ -9,7 +9,7 @@ import { COOKIE_NAME, MAX_AGE } from '@/constants';
 export async function POST(request: Request) {
   const body = await request.json();
 
-  const { name, lastname, email, password } = body;
+  const { name, lastname, email, password, id } = body;
 
   try {
     connectToDB();
@@ -20,11 +20,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'El E-Mail ya fue tomado' }, { status: 400 });
     }
 
+    const isIdTaken = await User.findOne({ id });
+
+    if (isIdTaken) {
+      return NextResponse.json({ message: 'El DNI ya se encuentra registrado' }, { status: 400 });
+    }
+
     const user = await User.create({
       name,
       lastname,
       email,
       password,
+      id,
     })
     
     if (!user) {

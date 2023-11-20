@@ -26,12 +26,13 @@ const Page = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      id: '',
     }
   })
 
   const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
     setSubmiting(true);
-    const { name, lastname, email, password, confirmPassword } = data;
+    const { name, lastname, email, password, confirmPassword, id } = data;
 
     if (password !== confirmPassword) {
       setSubmiting(false);
@@ -43,6 +44,7 @@ const Page = () => {
       lastname,
       email,
       password,
+      id,
     }
 
     await axios.post(`/api/auth/sign-up`, payload)
@@ -61,7 +63,7 @@ const Page = () => {
   };
 
   return (
-    <Card className='w-[350px]'>
+    <Card className='w-[350px] my-8'>
       <CardHeader>
         <CardTitle>Registrarse</CardTitle>
         <CardDescription>Muestras de Laboratorio</CardDescription>
@@ -100,6 +102,25 @@ const Page = () => {
                       className='bg-gray-200'
                       type='text'
                       placeholder='Ingrese su nombre...' 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='id'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>DNI</FormLabel>
+                  <FormControl>
+                    <Input 
+                      className='bg-gray-200'
+                      type='text'
+                      placeholder='Ingrese su DNI...' 
                       {...field} 
                     />
                   </FormControl>

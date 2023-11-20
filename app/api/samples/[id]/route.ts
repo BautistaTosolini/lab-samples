@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .populate({
         path: 'researcher',
         model: User,
-        select: '-password'
+        select: '-password',
       });
 
     if (user) {

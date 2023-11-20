@@ -98,7 +98,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       await axios.get(`/api/samples/${params.id}`)
         .then((response) => {
           const sample = response.data.sample;
-          const researcher = response.data.user;
+          const researcher = response.data.sample.researcher;
 
           setSample(sample);
           setResearcher(researcher);

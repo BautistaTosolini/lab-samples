@@ -21,6 +21,12 @@ const ResearcherDetailsCard = ({ researcher }: { researcher: UserInterface }) =>
           {researcher.name} {researcher.lastname}
         </InformationCard>
         <Label>
+          DNI:
+        </Label>
+        <InformationCard>
+          {researcher.id}
+        </InformationCard>
+        <Label>
           E-Mail:
         </Label>
         <InformationCard>
