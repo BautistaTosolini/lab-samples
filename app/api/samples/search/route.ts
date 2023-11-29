@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   
   const page = url.searchParams.get('page');
   const searchParam = url.searchParams.get('searchParam');
+  const type = url.searchParams.get('type');
   const perPage = PER_PAGE;
 
   if (!page || !searchParam) {
@@ -49,7 +50,12 @@ export async function GET(request: Request) {
 
     //if user is secretary or admin search all samples
     if (user.role !== 'researcher') {
-      const totalSamplesCount = await Sample.countDocuments({ code: { $regex: new RegExp(searchParam, 'i') } });
+      const totalSamplesCount = await Sample.countDocuments({
+        $and: [
+          { serviceType: type },
+          { code: { $regex: new RegExp(searchParam, 'i') } },
+        ]
+      });
 
       // if already sent all samples, returns null
       if (totalSamplesCount < samplesRequested && totalSamplesCount < 0) {
@@ -57,8 +63,13 @@ export async function GET(request: Request) {
       }
 
       const samples = await Sample
-        .find({ code: { $regex: new RegExp(searchParam, 'i') } })
-        .sort({ createdAt: -1 })
+        .find({
+          code: { $regex: new RegExp(searchParam, 'i') },
+          serviceType: type,
+        })
+        .sort({
+          createdAt: -1
+        })
         .limit(perPage)
         // .skip(skipAmount)
         .populate({
@@ -79,6 +90,7 @@ export async function GET(request: Request) {
       $and: [
         { researcher: userId },
         { code: { $regex: new RegExp(searchParam, 'i') } },
+        { serviceType: type },
       ],
     });
 
@@ -90,6 +102,7 @@ export async function GET(request: Request) {
     if (searchParam.length < 1) {
       const samples = await Sample.find({
         researcher: user._id,
+        serviceType: type,
         options: {
           sort: { createdAt: -1 },
         },
@@ -110,6 +123,7 @@ export async function GET(request: Request) {
     .find({
       code: { $regex: new RegExp(searchParam, 'i') },
       researcher: user._id,
+      serviceType: type,
     })
     .sort({
       createdAt: -1,
@@ -152,6 +166,7 @@ export async function POST(request: Request) {
   const {
     initialDate,
     finalDate,
+    type,
   } = body;
 
   try {
@@ -170,6 +185,7 @@ export async function POST(request: Request) {
     connectToDB();
 
     const samples = await Sample.find({
+      serviceType: type,
       createdAt: {
         $gte: new Date(initialDate),
         $lte: new Date(finalDate),

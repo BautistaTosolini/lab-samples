@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { string } from 'zod';
 
 const sampleModel = new mongoose.Schema({
   code: { 
@@ -19,24 +20,36 @@ const sampleModel = new mongoose.Schema({
   },
   inclusion: {
     type: Boolean,
-    default: false,
   },
   semithin: {
     type: Boolean,
-    default: false,
   },
   thin: {
     type: Boolean,
-    default: false,
   },
   grid: {
     type: Boolean,
-    default: false,
+  },
+  staining: {
+    type: Boolean,
   },
   finished: {
     type: Boolean,
     default: false,
   },
+  serviceName: {
+    type: String,
+    required: true,
+  },
+  serviceType: {
+    type: String,
+    enum: ['processing', 'staining'],
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true,
+  }
 }, {
   timestamps: true
 });

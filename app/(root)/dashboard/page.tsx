@@ -12,11 +12,12 @@ import toast from 'react-hot-toast';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Label } from '@/components/ui/label';
-import Navbar from '@/components/shared/Navbar';
 
 import { Samples, UserInterface } from '@/lib/interfaces/models.interface';
 import { Search } from 'lucide-react';
 import LoadingSamples from '@/components/shared/LoadingSamples';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 const Page = () => {
   const router = useRouter();
@@ -28,6 +29,7 @@ const Page = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const [searchParam, setSearchParam] = useState('');
+  const [serviceType, setServiceType] = useState<'processing' | 'staining'>('processing');
   const [isMounted, setIsMounted] = useState(false);
   
   //waits 0.5s before making the fetch request
@@ -38,7 +40,7 @@ const Page = () => {
       const newPage = 1;
 
       if (searchParam.length === 0 && isMounted) {
-        await axios.get(`/api/samples?page=${newPage}`)
+        await axios.get(`/api/samples?page=${newPage}&type=${serviceType}&type=${serviceType}`)
           .then((response) => {
             const user = response.data.user;
             const samples = response.data.user.samples;
@@ -60,7 +62,7 @@ const Page = () => {
       }
 
       if (searchParam.length > 0 && isMounted) {
-        await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${newPage}`)
+        await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${newPage}&type=${serviceType}`)
           .then((response) => {
             const searchedSamples = response.data.samples;
             const hasMore = response.data.hasMore;
@@ -80,10 +82,10 @@ const Page = () => {
 
   }, [debouncedValue])
   
-  //get user data and samples
+  // get user data and samples when mounting the page
   useEffect(() => {
-    (async () => {
-      await axios.get(`/api/samples?page=${page}`)
+    const getSamples = async () => {
+      await axios.get(`/api/samples?page=${page}&type=${serviceType}`)
         .then((response) => {
           const user = response.data.user;
           const samples = response.data.user.samples;
@@ -102,36 +104,51 @@ const Page = () => {
         .catch((error) => {
           toast.error(error.response.data.message);
         })
-    })()
+    }
+    
+    getSamples();
   }, [])
 
-  //get more samples when scrolling down
+  // get more samples when scrolling down
   const getMoreSamples = async () => {
+
     if (searchParam.length === 0) {
       setPage(page + 1);
 
-      await axios.get(`/api/samples?page=${page}`)
+      await axios.get(`/api/samples?page=${page}&type=${serviceType}`)
         .then((response) => {
           const newSamples = response.data.user.samples;
           const hasMore = response.data.hasMore;
 
-          setSamples([...samples!, ...newSamples || []]);
+          if (!samples) {
+            setSamples(newSamples);
+          } else {
+            setSamples([...samples!, ...newSamples || []]);
+          }
+
           setPage(page + 1);
           setHasMore(hasMore);
         })
         .catch((error) => {
-          toast.error(error.response.data.message);
+          if (error.response) {
+            toast.error(error.response.data.message);
+          }
         })
 
     } else {
       
-      await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${page}`)
+      await axios.get(`/api/samples/search?searchParam=${searchParam}&page=${page}&type=${serviceType}`)
         .then((response) => {
           const user = response.data.user;
           const hasMore = response.data.hasMore;
           const newSamples = response.data.user.samples;
 
-          setSamples([...samples!, ...newSamples || []]);
+          if (!samples) {
+            setSamples(newSamples);
+          } else {
+            setSamples([...samples!, ...newSamples || []]);
+          }
+          
           setPage(page + 1);
           setHasMore(hasMore);
 
@@ -146,8 +163,26 @@ const Page = () => {
     }
   }
 
-  //if userinfo is null show a loading screen
-  if (!userInfo) {
+  useEffect(() => {
+    getMoreSamples();
+  }, [serviceType])
+
+  const alternateService = () => {
+    setSamples(null);
+
+    if (serviceType === 'processing') {
+      setServiceType('staining');
+      setPage(1);
+      setHasMore(true);
+    } else {
+      setServiceType('processing');
+      setPage(1);
+      setHasMore(true);
+    }
+  }
+
+  // if userinfo is null show a loading screen
+  if (!userInfo || !samples) {
     return <LoadingSpinner />
   }
 
@@ -156,20 +191,28 @@ const Page = () => {
 
       <div className='flex flex-col gap-4 m-4 mt-16'>
         <div className='flex flex-row justify-between items-center gap-2 px-10'>
-          <Label className='w-96 font-semibold text-lg hidden sm:flex'>
-            Buscar por código de muestra:
-          </Label>
+          <div className='flex flex-row gap-2 w-full items-center'>
+            <Label className='font-semibold text-lg hidden sm:flex w-full'>
+              Buscar por código de muestra:
+            </Label>
 
-          <div className='bg-white rounded-lg flex-row w-full items-center hidden sm:flex'>
-            <Input
-              className='w-full border-none focus-visible:outline-none'
-              value={searchParam}
-              onChange={(e) => setSearchParam(e.target.value)}
-            />
-            <Search 
-              className='mx-4'
-            />
+            <div className='bg-white rounded-lg flex-row w-full items-center hidden sm:flex'>
+              <Input
+                className='w-full border-none focus-visible:outline-none'
+                value={searchParam}
+                onChange={(e) => setSearchParam(e.target.value)}
+              />
+              
+              <Search 
+                className='mx-4'
+              />
+            </div>
+
+            <Button onClick={() => alternateService()}>
+              {serviceType === 'processing' ? 'Procesamiento' : 'Tinción'}
+            </Button>
           </div>
+
 
           <div className='bg-white rounded-lg flex flex-row w-full items-center sm:hidden'>
             <Input
@@ -185,7 +228,10 @@ const Page = () => {
 
         </div>
 
-        <TableHeader />
+        <TableHeader 
+          type={serviceType}
+          print={false}
+        />
 
         <div className='flex flex-col gap-2 h-full'>
           {samples!.length === 0 ? 
@@ -196,23 +242,41 @@ const Page = () => {
               hasMore={hasMore}
               loader={<LoadingSamples />}
             >
-              {samples?.map((sample) => {
-                return (
-                  <SampleCard 
-                    key={`${sample._id}-${sample.code}-${sample.date}`}
-                    code={sample.code}
-                    date={sample.createdAt}
-                    researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
-                    sampleType={sample.sampleType}
-                    observations={sample.observations}
-                    inclusion={sample.inclusion}
-                    semithin={sample.semithin}
-                    thin={sample.thin}
-                    grid={sample.grid}
-                    finished={sample.finished}
-                    _id={sample._id}
-                  />
-                )
+              {samples.map((sample) => {
+                if (serviceType === 'processing') {
+                  return (
+                    <SampleCard 
+                      key={`${sample._id}-${sample.code}-${sample.date}`}
+                      code={sample.code}
+                      date={sample.createdAt}
+                      researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
+                      sampleType={sample.sampleType}
+                      observations={sample.observations}
+                      inclusion={sample.inclusion}
+                      semithin={sample.semithin}
+                      thin={sample.thin}
+                      grid={sample.grid}
+                      finished={sample.finished}
+                      _id={sample._id}
+                      type={serviceType}
+                    />
+                  )
+                } else {
+                  return (
+                    <SampleCard 
+                      key={`${sample._id}-${sample.code}-${sample.date}`}
+                      code={sample.code}
+                      date={sample.createdAt}
+                      researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
+                      sampleType={sample.sampleType}
+                      observations={sample.observations}
+                      staining={sample.staining}
+                      finished={sample.finished}
+                      _id={sample._id}
+                      type={serviceType}
+                    />
+                  )
+                }
               })}
             </InfiniteScroll>
           }

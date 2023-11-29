@@ -52,18 +52,30 @@ const Page = ({ params }: { params: { id: string } }) => {
       inclusion, 
       semithin, 
       thin, 
-      grid, 
-      finished 
+      grid,
+      staining,
+      finished,
     } = data;
 
-    const payload = {
-      observations,
-      inclusion,
-      semithin,
-      thin,
-      grid,
-      sampleId: params.id,
-      finished,
+    let payload;
+
+    if (sample!.serviceType === 'processing') {
+      payload = {
+        observations,
+        inclusion,
+        semithin,
+        thin,
+        grid,
+        sampleId: params.id,
+        finished,
+      }
+    } else {
+      payload = {
+        observations,
+        staining,
+        sampleId: params.id,
+        finished,
+      }
     }
 
     await axios.put(`/api/samples`, payload)
@@ -88,6 +100,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       semithin: sample ? sample.semithin : false,
       thin: sample ? sample.thin : false,
       grid: sample ? sample.grid : false,
+      staining: sample ? sample.staining : false,
       finished: sample ? sample.finished : false,
     },
   });
@@ -105,10 +118,11 @@ const Page = ({ params }: { params: { id: string } }) => {
           setIsLoading(false);
           form.reset({
             observations: sample.observations,
-            inclusion: sample.inclusion,
-            semithin: sample.semithin,
-            thin: sample.thin,
-            grid: sample.grid,
+            inclusion: sample.inclusion ? sample.inclusion : false,
+            semithin: sample.semithin ? sample.semithin : false,
+            thin: sample.thin ? sample.thin : false,
+            grid: sample.grid ? sample.grid : false,
+            staining: sample.staining ? sample.staining : false,
             finished: sample.finished,
           });
         })

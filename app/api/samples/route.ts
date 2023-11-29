@@ -7,11 +7,13 @@ import User from '@/lib/models/user.model';
 import { COOKIE_NAME, PER_PAGE } from '@/constants';
 import Sample from '@/lib/models/sample.model';
 import { transporter } from '@/config/mailer';
+import Service from '@/lib/models/service.model';
 
 export async function GET(request: Request) {
   const url = new URL(request.url!);
   
   const page = url.searchParams.get('page');
+  const type = url.searchParams.get('type');
   const perPage = PER_PAGE;
 
   const cookieStore = cookies();
@@ -44,7 +46,7 @@ export async function GET(request: Request) {
 
     //if user is secretary or admin search all samples
     if (user.role !== 'researcher') {
-      const totalSamplesCount = await Sample.countDocuments({});
+      const totalSamplesCount = await Sample.countDocuments({ serviceType: type });
 
       // if already sent all samples, returns null
       if (totalSamplesCount <= samplesRequested && totalSamplesCount < 0) {
@@ -52,8 +54,12 @@ export async function GET(request: Request) {
       }
 
       const samples = await Sample
-        .find({})
-        .sort({ createdAt: -1 })
+        .find({
+          serviceType: type
+        })
+        .sort({
+          createdAt: -1
+        })
         .limit(perPage)
         .skip(skipAmount)
         .populate({
@@ -72,15 +78,26 @@ export async function GET(request: Request) {
     }
 
     //if user is researcher only search assigned samples
-    const totalSamplesCount = await Sample.countDocuments({ researcher: userId });
+    const totalSamplesCount = await Sample.countDocuments({
+      $and: [
+        { researcher: userId },
+        { serviceType: type },
+      ],
+    });
 
     // if already sent all samples, returns null
     if (totalSamplesCount <= samplesRequested && totalSamplesCount < 0) {
       return NextResponse.json({ user: null, hasMore: false }, { status: 200 });
     }
 
-    const samples = await Sample.find({ researcher: userId })
-      .sort({ createdAt: -1 })
+    const samples = await Sample
+      .find({ 
+        researcher: userId,
+        serviceType: type,
+      })
+      .sort({
+        createdAt: -1
+      })
       .limit(perPage)
       .skip(skipAmount)
       .populate({
@@ -112,7 +129,8 @@ export async function PUT(request: Request) {
     thin, 
     semithin, 
     grid, 
-    sampleId, 
+    sampleId,
+    staining,
     finished 
   } = body;
 
@@ -154,6 +172,7 @@ export async function PUT(request: Request) {
     sample.thin = thin;
     sample.semithin = semithin;
     sample.grid = grid;
+    sample.staining = staining;
     sample.finished = finished;
 
     await sample.save();
@@ -236,6 +255,7 @@ export async function POST(request: Request) {
     code,
     sampleType,
     observations,
+    serviceCode,
    } = body;
 
   try {
@@ -249,12 +269,38 @@ export async function POST(request: Request) {
 
     connectToDB();
 
-    const sample = await Sample.create({
-      researcher,
-      code,
-      sampleType,
-      observations,
-    })
+    const service = await Service.findOne({ code: serviceCode });
+
+    let sample;
+
+    if (service.type === 'processing') {
+      sample = await Sample.create({
+        researcher,
+        code,
+        sampleType,
+        observations,
+        price: service.price,
+        serviceName: service.name,
+        serviceType: service.type,
+        service: service._id,
+        inclusion: false,
+        semithin: false,
+        thin: false,
+        grid: false,
+      })
+    } else {
+      sample = await Sample.create({
+        researcher,
+        code,
+        sampleType,
+        observations,
+        price: service.price,
+        serviceName: service.name,
+        serviceType: service.type,
+        service: service._id,
+        staining: false, 
+      })
+    }
     
     const updatedResearcher = await User.findByIdAndUpdate(researcher, {
       $inc: { samplesCount: 1 },

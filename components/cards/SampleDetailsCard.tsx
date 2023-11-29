@@ -13,7 +13,7 @@ import { CheckSquare, Square } from 'lucide-react';
 
 interface SampleDetailsCardProps {
   sample: Samples;
-  form: UseFormReturn<{ observations: string; inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; finished: boolean; }, any, undefined>;
+  form: UseFormReturn<{ observations: string; inclusion: boolean; semithin: boolean; thin: boolean; grid: boolean; staining: boolean; finished: boolean; }, any, undefined>;
   user: UserInterface;
 }
 
@@ -68,6 +68,21 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
             </div>
           </>
         }
+
+        <div className='mt-2' />
+        <Label>
+          Tipo de Servicio:
+        </Label>
+        <InformationCard>
+          {sample.serviceName}
+        </InformationCard>
+
+        <Label>
+          Precio del Servicio:
+        </Label>
+        <InformationCard>
+          $ {sample.price}
+        </InformationCard>
         
         <Label>
           Fecha de Creación:
@@ -82,7 +97,8 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
           {formatDateTime(updatedAtDate)}
         </InformationCard>
 
-    	  {user.role !== 'researcher' ?
+    	  {
+          user.role !== 'researcher' && sample.serviceType === 'processing' &&
           <>
             <FormField
               control={form.control}
@@ -164,7 +180,9 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
               )}
             />
           </>
-        :
+        }
+        {
+          user.role === 'researcher' && sample.serviceType === 'processing' &&
           <div className='flex flex-col gap-2 font-semibold'>
             <div className='flex justify-between'>
               Inclusión:
@@ -187,8 +205,56 @@ const SampleDetailsCard = ({ sample, form, user }: SampleDetailsCardProps) => {
               {sample.finished ? <CheckSquare /> : <Square />}
             </div>
           </div>
-        } 
+        }
+        {
+          user.role !== 'researcher' && sample.serviceType === 'staining' &&
+          <>
+            <FormField
+              control={form.control}
+              name='staining'
+              render={({ field }) => (
+                <FormItem className='flex justify-between m-2'>
+                  <FormLabel>Tinción</FormLabel>
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
+            <FormField
+              control={form.control}
+              name='finished'
+              render={({ field }) => (
+                <FormItem className='flex justify-between m-2'>
+                  <FormLabel>Finalizado</FormLabel>
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </>
+        }
+        {
+          user.role === 'researcher' && sample.serviceType === 'staining' &&
+          <div className='flex flex-col gap-2 font-semibold'>
+            <div className='flex justify-between'>
+              Tinción:
+              {sample.staining ? <CheckSquare /> : <Square />}
+            </div>
+            <div className='flex justify-between'>
+              Finalizado:
+              {sample.finished ? <CheckSquare /> : <Square />}
+            </div>
+          </div>
+        }
       </>
     </>
   )

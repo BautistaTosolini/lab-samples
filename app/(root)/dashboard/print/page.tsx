@@ -36,6 +36,7 @@ const Page = () => {
 
   const [searched, setSearched] = useState(false);
   const [samples, setSamples] = useState<Samples[] | null>(null);
+  const [serviceType, setServiceType] = useState<'processing' | 'staining'>('processing');
 
   const targetRef = useRef<HTMLDivElement | null>(null);
 
@@ -82,6 +83,7 @@ const Page = () => {
     await axios.post('/api/samples/search', {
       initialDate,
       finalDate,
+      type: serviceType,
     })
     .then((response) => {
       setSamples(response.data.samples);
@@ -97,6 +99,17 @@ const Page = () => {
       setSubmiting(false);
       setSearched(true);
     })
+  }
+
+  const alternateService = () => {
+    setSamples(null);
+
+    if (serviceType === 'processing') {
+      setServiceType('staining');
+
+    } else {
+      setServiceType('processing');
+    }
   }
 
   if (isLoading || !userInfo) {
@@ -170,9 +183,12 @@ const Page = () => {
         >
           Imprimir
         </Button>
+        <Button onClick={alternateService}>
+          {serviceType === 'processing' ? 'Procesamiento' : 'Tinción'}
+        </Button>
       </div>
       <div 
-        className='flex flex-col gap-2 h-full'
+        className='flex flex-col gap-2 h-full items-center'
         ref={targetRef}
       >
         {!searched ? 
@@ -182,29 +198,33 @@ const Page = () => {
             <h1 className='text-center font-semibold text-lg'>Ninguna muestra encontrada.</h1>
               :
               <div>
-                <div className='flex flex-col gap-4 mb-2'>
+                <div className='flex flex-col gap-4 mb-2 items-center'>
                   <h1 className='text-center font-semibold text-lg'>Muestras desde el {selectedInitialDate?.toLocaleDateString()} hasta el {selectedFinalDate?.toLocaleDateString()}.</h1>
-                  <TableHeader print={true} />
+                  <TableHeader
+                    print={true}
+                    type={serviceType}
+                  />
                 </div>  
                 {samples?.map((sample, index) => {
                   return (
                     <div
                       key={`${sample._id}-${sample.code}-${sample.date}`}
-                      className={`${(index < 24 && (index + 1) % 23 === 0) ? 'mb-10' : ''}`}
+                      // className={`${(index < 26 && (index + 1) % 26 === 0) ? 'mb-10' : ''}`}
                     >
                       <SampleCard 
-                      code={sample.code}
-                      date={sample.createdAt}
-                      researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
-                      sampleType={sample.sampleType}
-                      observations={sample.observations}
-                      inclusion={sample.inclusion}
-                      semithin={sample.semithin}
-                      thin={sample.thin}
-                      grid={sample.grid}
-                      finished={sample.finished}
-                      _id={sample._id}
-                      print={true}
+                        code={sample.code}
+                        date={sample.createdAt}
+                        researcher={`${sample.researcher.name} ${sample.researcher.lastname}`}
+                        sampleType={sample.sampleType}
+                        observations={sample.observations}
+                        inclusion={sample.inclusion}
+                        semithin={sample.semithin}
+                        thin={sample.thin}
+                        grid={sample.grid}
+                        finished={sample.finished}
+                        _id={sample._id}
+                        print={true}
+                        type={serviceType}
                       />
                     </div> 
                     )

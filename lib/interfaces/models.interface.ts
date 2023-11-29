@@ -13,6 +13,10 @@ export interface Samples {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  serviceName: string;
+  serviceType: string;
+  price: number;
+  staining: boolean;
 }
 
 export interface UserInterface {
@@ -25,6 +29,12 @@ export interface UserInterface {
   _id: string;
   createdAt: string;
   samplesCount: number;
+}
+
+export interface ServiceInterface {
+  code: number;
+  name: string;
+  price: number;
 }
 
 export interface CustomError {

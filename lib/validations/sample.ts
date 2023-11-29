@@ -7,9 +7,10 @@ export const SampleSchema = z.object({
 
 export const UpdateSampleSchema = z.object({
   observations: z.string().optional(),
-  inclusion: z.boolean(),
-  semithin: z.boolean(),
-  thin: z.boolean(),
-  grid: z.boolean(),
+  inclusion: z.boolean().optional(),
+  semithin: z.boolean().optional(),
+  thin: z.boolean().optional(),
+  grid: z.boolean().optional(),
+  staining: z.boolean().optional(),
   finished: z.boolean(),
 })

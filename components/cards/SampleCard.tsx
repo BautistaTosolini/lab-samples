@@ -7,16 +7,18 @@ interface SampleCardProps {
   researcher: string;
   sampleType: string;
   observations: string;
-  inclusion: boolean;
-  semithin: boolean;
-  thin: boolean;
-  grid: boolean;
+  inclusion?: boolean;
+  semithin?: boolean;
+  thin?: boolean;
+  grid?: boolean;
+  staining?: boolean;
   finished: boolean;
   _id: string;
   print?: boolean;
+  type: 'processing' | 'staining';
 }
 
-const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid, _id, finished, print = false }: SampleCardProps) => {
+const SampleCard = ({ code, date, researcher, sampleType, observations, inclusion, semithin, thin, grid, staining, _id, finished, print = false, type }: SampleCardProps) => {
   const router = useRouter();
   const finalDate = new Date(date);
 
@@ -42,20 +44,29 @@ const SampleCard = ({ code, date, researcher, sampleType, observations, inclusio
           {observations}
         </span>
       </div>
-      <div className='gap-2 text-center justify-center ml-3 hidden sm:flex'>
-        <span className='w-20 font-semibold justify-center flex'>
-          {inclusion ? <CheckSquare /> : <Square />}
-        </span>
-        <span className='w-20 font-semibold justify-center flex'>
-          {semithin ? <CheckSquare /> : <Square />}
-        </span>
-        <span className='w-20 font-semibold justify-center flex'>
-          {thin ? <CheckSquare /> : <Square />} 
-        </span>
-        <span className='w-20 font-semibold justify-center flex'>
-          {grid ? <CheckSquare /> : <Square />}
-        </span>
-      </div>
+      {
+        type === 'processing' ?
+          <div className='gap-2 text-center justify-center ml-3 hidden sm:flex'>
+            <span className='w-20 font-semibold justify-center flex'>
+              {inclusion ? <CheckSquare /> : <Square />}
+            </span>
+            <span className='w-20 font-semibold justify-center flex'>
+              {semithin ? <CheckSquare /> : <Square />}
+            </span>
+            <span className='w-20 font-semibold justify-center flex'>
+              {thin ? <CheckSquare /> : <Square />} 
+            </span>
+            <span className='w-20 font-semibold justify-center flex'>
+              {grid ? <CheckSquare /> : <Square />}
+            </span>
+          </div>
+        :
+          <div className='gap-2 text-center justify-center ml-3 hidden sm:flex'>
+            <span className='w-40 font-semibold justify-center flex'>
+              {staining ? <CheckSquare /> : <Square />}
+            </span>
+          </div>
+      }
     </div>
   )
 }
