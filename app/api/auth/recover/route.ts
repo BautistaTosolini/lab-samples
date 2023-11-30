@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const mailer = process.env.MAILER;
     const url = process.env.BASE_URL;
-    const recoverPasswordMail = process.env.RECOVER_PASSWORD_MAIL || `<div>
+    const recoverPasswordMail = `<div>
     <h1>
       Muestras de Laboratorio
     </h1>

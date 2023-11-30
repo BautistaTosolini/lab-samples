@@ -197,7 +197,12 @@ export async function PUT(request: Request) {
               Código de Muestra: ${sample.code}
             </p>
             <p>
-              Observaciones: ${observations}
+              ${
+                !observations ? 
+                  'Sin observaciones' 
+                : 
+                  `Observaciones: ${observations}`
+              }
             </p>
           </div>
         `
@@ -220,7 +225,12 @@ export async function PUT(request: Request) {
               Código de Muestra: ${sample.code}
             </p>
             <p>
-              Observaciones: ${observations}
+              ${
+                !observations ? 
+                  'Sin observaciones' 
+                : 
+                  `Observaciones: ${observations}`
+              }
             </p>
           </div>
         `
@@ -309,7 +319,7 @@ export async function POST(request: Request) {
     
     const mailer = process.env.MAILER;
     const url = process.env.BASE_URL;
-    const createSampleMail = process.env.CREATE_SAMPLE_MAIL || `<div>
+    const createSampleMail = `<div>
       <h1>
         Muestras de Laboratorio
       </h1>
@@ -320,7 +330,18 @@ export async function POST(request: Request) {
         Código de Muestra: ${code}
       </p>
       <p>
-        Observaciones: ${observations}
+        ${
+          !observations ? 
+            'Sin observaciones' 
+          : 
+            `Observaciones: ${observations}`
+        }
+      </p>
+      <p>
+        Tipo de servicio: ${sample.serviceName}
+      </p>
+      <p>
+        Costo: $${sample.price}
       </p>
     </div>
   `;
